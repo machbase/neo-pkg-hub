@@ -1,0 +1,8 @@
+packages:
+    - name: neo-pkg-replication
+      organization: machbase
+      repo: neo-pkg-replication
+
+    - name: neo-pkg-opcua-client
+      organization: machbase
+      repo: neo-pkg-opcua-client
