@@ -6,3 +6,11 @@ packages:
     - name: neo-pkg-opcua-client
       organization: machbase
       repo: neo-pkg-opcua-client
+
+    - name: neo-pkg-llm-chat
+      organization: machbase
+      repo: neo-pkg-llm-chat
+
+    - name: neo-pkg-blackbox
+      organization: machbase
+      repo: neo-pkg-blackbox

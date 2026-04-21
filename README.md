@@ -2,7 +2,7 @@
 
 machbase-neo 패키지 메타데이터 및 README 허브.
 
-`packages.yaml`에 등록된 각 패키지의 GitHub 정보와 README를 매일 00:00 UTC에 자동 수집하여 `packages.json`과 `readmes/<name>.md`로 발행합니다. neo-web 등 클라이언트는 이 정적 파일을 raw URL로 조회합니다.
+`packages.yaml`에 등록된 각 패키지의 GitHub 메타데이터를 매일 00:00 UTC에 자동 수집하여 `packages.json`으로 발행합니다. neo-web 등 클라이언트는 이 정적 파일을 raw URL로 조회하고, README는 `packages.json`의 `full_name`과 `default_branch`를 조합해 원본 저장소에서 직접 가져옵니다.
 
 ## 구조
 
@@ -10,8 +10,6 @@ machbase-neo 패키지 메타데이터 및 README 허브.
 .
 ├── packages.yaml              # 패키지 목록 (수동 관리)
 ├── packages.json              # 전체 메타데이터 (자동 생성)
-├── readmes/                   # 각 패키지 README (자동 생성)
-│   └── <name>.md
 ├── scripts/
 │   └── sync.sh                # sync 로직 (bash + curl + jq + yq)
 └── .github/workflows/
@@ -29,7 +27,7 @@ packages:
     repo: neo-cat
 ```
 
-다음 sync 실행 시 자동으로 `packages.json`과 `readmes/neo-cat.md`가 갱신됩니다.
+다음 sync 실행 시 자동으로 `packages.json`이 갱신됩니다.
 
 ## 출력 스키마
 
@@ -58,10 +56,19 @@ packages:
 
 ## 클라이언트 접근
 
+메타데이터:
+
 ```
 https://raw.githubusercontent.com/<owner>/neo-pkg-hub/main/packages.json
-https://raw.githubusercontent.com/<owner>/neo-pkg-hub/main/readmes/<name>.md
 ```
+
+README는 `packages.json`의 각 항목에서 URL을 조합:
+
+```
+https://raw.githubusercontent.com/{github.full_name}/{github.default_branch}/README.md
+```
+
+예) `https://raw.githubusercontent.com/machbase/neo-cat/main/README.md`
 
 ## Sync 실행
 

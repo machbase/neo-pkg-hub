@@ -3,11 +3,7 @@ set -euo pipefail
 
 PACKAGES_YAML="${PACKAGES_YAML:-packages.yaml}"
 OUTPUT_JSON="${OUTPUT_JSON:-packages.json}"
-README_DIR="${README_DIR:-readmes}"
 GH_API="${GH_API:-https://api.github.com}"
-RAW_BASE="${RAW_BASE:-https://raw.githubusercontent.com}"
-
-mkdir -p "$README_DIR"
 
 AUTH_HEADER=()
 if [[ -n "${GITHUB_TOKEN:-}" ]]; then
@@ -27,8 +23,6 @@ for ((i=0; i<count; i++)); do
   repo_json=$(curl -fsSL "${AUTH_HEADER[@]}" \
     -H "Accept: application/vnd.github+json" \
     "$GH_API/repos/$org/$repo")
-
-  default_branch=$(echo "$repo_json" | jq -r '.default_branch')
 
   entry=$(jq -n \
     --arg name "$name" \
@@ -51,14 +45,6 @@ for ((i=0; i<count; i++)); do
       },
       pushed_at: $r.pushed_at
     }')
-
-  readme_url="$RAW_BASE/$org/$repo/$default_branch/README.md"
-  if curl -fsSL "${AUTH_HEADER[@]}" "$readme_url" -o "$README_DIR/$name.md"; then
-    echo "  README -> $README_DIR/$name.md"
-  else
-    echo "  README not found at $readme_url" >&2
-    rm -f "$README_DIR/$name.md"
-  fi
 
   results=$(echo "$results" | jq --argjson e "$entry" '. + [$e]')
 done
