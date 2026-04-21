@@ -13,7 +13,7 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-20T06:48:46Z"
+    "pushed_at": "2026-04-21T02:14:13Z"
   },
   {
     "name": "neo-pkg-opcua-client",
@@ -29,6 +29,38 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-20T07:08:23Z"
+    "pushed_at": "2026-04-21T02:50:23Z"
+  },
+  {
+    "name": "neo-pkg-llm-chat",
+    "description": "",
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-llm-chat",
+      "full_name": "machbase/neo-pkg-llm-chat",
+      "html_url": "https://github.com/machbase/neo-pkg-llm-chat",
+      "default_branch": "main",
+      "language": "TypeScript",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
+    },
+    "pushed_at": "2026-04-21T02:25:51Z"
+  },
+  {
+    "name": "neo-pkg-blackbox",
+    "description": "",
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-blackbox",
+      "full_name": "machbase/neo-pkg-blackbox",
+      "html_url": "https://github.com/machbase/neo-pkg-blackbox",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
+    },
+    "pushed_at": "2026-04-17T07:42:43Z"
   }
 ]
