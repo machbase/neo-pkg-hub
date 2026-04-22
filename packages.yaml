@@ -1,3 +1,5 @@
+# icon 필드는 선택사항. 생략 시 각 저장소 루트의 icon.svg → icon.png 순으로 자동 감지
+# (https://raw.githubusercontent.com/{full_name}/{default_branch}/icon.{svg,png})
 packages:
     - name: neo-pkg-replication
       organization: machbase

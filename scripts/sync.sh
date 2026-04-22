@@ -17,6 +17,7 @@ for ((i=0; i<count; i++)); do
   name=$(yq -r ".packages[$i].name" "$PACKAGES_YAML")
   org=$(yq -r ".packages[$i].organization" "$PACKAGES_YAML")
   repo=$(yq -r ".packages[$i].repo" "$PACKAGES_YAML")
+  icon_override=$(yq -r ".packages[$i].icon // \"\"" "$PACKAGES_YAML")
 
   echo "Syncing: $org/$repo (name: $name)"
 
@@ -24,14 +25,31 @@ for ((i=0; i<count; i++)); do
     -H "Accept: application/vnd.github+json" \
     "$GH_API/repos/$org/$repo")
 
+  default_branch=$(echo "$repo_json" | jq -r '.default_branch')
+  full_name=$(echo "$repo_json" | jq -r '.full_name')
+  if [[ -n "$icon_override" ]]; then
+    icon_url="$icon_override"
+  else
+    icon_url=""
+    for ext in svg png; do
+      candidate="https://raw.githubusercontent.com/${full_name}/${default_branch}/icon.${ext}"
+      if curl -fsSL -o /dev/null -I "$candidate"; then
+        icon_url="$candidate"
+        break
+      fi
+    done
+  fi
+
   entry=$(jq -n \
     --arg name "$name" \
     --arg org "$org" \
     --arg repo "$repo" \
+    --arg icon "$icon_url" \
     --argjson r "$repo_json" \
     '{
       name: $name,
       description: ($r.description // ""),
+      icon: (if $icon == "" then null else $icon end),
       github: {
         organization: $org,
         repo: $repo,

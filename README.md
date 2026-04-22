@@ -25,9 +25,17 @@ packages:
   - name: neo-cat
     organization: machbase
     repo: neo-cat
+    icon: https://example.com/custom.png   # 선택: 아이콘 URL override
 ```
 
 다음 sync 실행 시 자동으로 `packages.json`이 갱신됩니다.
+
+## 아이콘
+
+각 패키지 저장소 루트에 `icon.svg` 또는 `icon.png`를 두면 자동으로 감지되어 노출됩니다
+(sync 시 HEAD 요청으로 `svg` → `png` 순 확인). 둘 다 없으면 `packages.json`의 `icon`은 `null`.
+다른 경로/파일명을 쓰려면 `packages.yaml`의 `icon` 필드에 전체 URL로 override.
+클라이언트는 `icon`이 `null`이거나 이미지 로드 실패 시 디폴트 아이콘으로 fallback 처리하세요.
 
 ## 출력 스키마
 
@@ -38,6 +46,7 @@ packages:
   {
     "name": "neo-cat",
     "description": "machbase neo's watchcat",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-cat/main/icon.png",
     "github": {
       "organization": "machbase",
       "repo": "neo-cat",
