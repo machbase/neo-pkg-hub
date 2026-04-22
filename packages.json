@@ -1,70 +1,70 @@
 [
-    {
-        "name": "neo-pkg-replication",
-        "description": "",
-        "version": "1.0.0",
-        "github": {
-            "organization": "machbase",
-            "repo": "neo-pkg-replication",
-            "full_name": "machbase/neo-pkg-replication",
-            "html_url": "https://github.com/machbase/neo-pkg-replication",
-            "default_branch": "main",
-            "language": "HTML",
-            "license": null,
-            "stargazers_count": 0,
-            "forks_count": 0
-        },
-        "pushed_at": "2026-04-22T01:59:26Z"
+  {
+    "name": "neo-pkg-replication",
+    "description": "",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.svg",
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-replication",
+      "full_name": "machbase/neo-pkg-replication",
+      "html_url": "https://github.com/machbase/neo-pkg-replication",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
     },
-    {
-        "name": "neo-pkg-opcua-client",
-        "description": "neo-pkg-opcua-client",
-        "version": "1.0.0",
-        "github": {
-            "organization": "machbase",
-            "repo": "neo-pkg-opcua-client",
-            "full_name": "machbase/neo-pkg-opcua-client",
-            "html_url": "https://github.com/machbase/neo-pkg-opcua-client",
-            "default_branch": "main",
-            "language": "HTML",
-            "license": null,
-            "stargazers_count": 0,
-            "forks_count": 0
-        },
-        "pushed_at": "2026-04-22T02:08:40Z"
+    "pushed_at": "2026-04-22T06:46:59Z"
+  },
+  {
+    "name": "neo-pkg-opcua-client",
+    "description": "neo-pkg-opcua-client",
+    "icon": null,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-opcua-client",
+      "full_name": "machbase/neo-pkg-opcua-client",
+      "html_url": "https://github.com/machbase/neo-pkg-opcua-client",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
     },
-    {
-        "name": "neo-pkg-llm-chat",
-        "description": "",
-        "version": "1.0.0",
-        "github": {
-            "organization": "machbase",
-            "repo": "neo-pkg-llm-chat",
-            "full_name": "machbase/neo-pkg-llm-chat",
-            "html_url": "https://github.com/machbase/neo-pkg-llm-chat",
-            "default_branch": "main",
-            "language": "TypeScript",
-            "license": null,
-            "stargazers_count": 0,
-            "forks_count": 0
-        },
-        "pushed_at": "2026-04-22T02:42:38Z"
+    "pushed_at": "2026-04-22T02:08:40Z"
+  },
+  {
+    "name": "neo-pkg-llm-chat",
+    "description": "",
+    "icon": null,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-llm-chat",
+      "full_name": "machbase/neo-pkg-llm-chat",
+      "html_url": "https://github.com/machbase/neo-pkg-llm-chat",
+      "default_branch": "main",
+      "language": "TypeScript",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
     },
-    {
-        "name": "neo-pkg-blackbox",
-        "description": "",
-        "version": "1.0.0",
-        "github": {
-            "organization": "machbase",
-            "repo": "neo-pkg-blackbox",
-            "full_name": "machbase/neo-pkg-blackbox",
-            "html_url": "https://github.com/machbase/neo-pkg-blackbox",
-            "default_branch": "main",
-            "language": "HTML",
-            "license": null,
-            "stargazers_count": 0,
-            "forks_count": 0
-        },
-        "pushed_at": "2026-04-22T02:25:50Z"
-    }
+    "pushed_at": "2026-04-22T05:33:26Z"
+  },
+  {
+    "name": "neo-pkg-blackbox",
+    "description": "",
+    "icon": null,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-blackbox",
+      "full_name": "machbase/neo-pkg-blackbox",
+      "html_url": "https://github.com/machbase/neo-pkg-blackbox",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
+    },
+    "pushed_at": "2026-04-22T06:41:25Z"
+  }
 ]
