@@ -2,6 +2,7 @@
   {
     "name": "neo-pkg-replication",
     "description": "Data replication tool",
+    "version":"1.0.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "github": {
       "organization": "machbase",
@@ -19,6 +20,7 @@
   {
     "name": "neo-pkg-opcua-client",
     "description": "Collect OPC-UA Data",
+    "version":"1.0.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
     "github": {
       "organization": "machbase",
@@ -36,6 +38,7 @@
   {
     "name": "neo-pkg-llm-chat",
     "description": "LLM-based chat interface",
+    "version":"1.0.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
     "github": {
       "organization": "machbase",
@@ -53,6 +56,7 @@
   {
     "name": "neo-pkg-blackbox",
     "description": "Video recording tool",
+    "version":"1.0.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/icon.png",
     "github": {
       "organization": "machbase",
