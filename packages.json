@@ -2,7 +2,7 @@
   {
     "name": "neo-pkg-replication",
     "description": "data replication tool",
-    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.svg",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-replication",
@@ -14,7 +14,7 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-24T06:01:00Z"
+    "pushed_at": "2026-04-24T08:59:15Z"
   },
   {
     "name": "neo-pkg-opcua-client",
