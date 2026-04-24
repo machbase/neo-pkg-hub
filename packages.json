@@ -1,7 +1,7 @@
 [
   {
     "name": "neo-pkg-replication",
-    "description": "data replication tool",
+    "description": "Data replication tool",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "github": {
       "organization": "machbase",
@@ -14,7 +14,7 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-24T08:59:15Z"
+    "pushed_at": "2026-04-24T09:05:59Z"
   },
   {
     "name": "neo-pkg-opcua-client",
@@ -31,12 +31,12 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-24T08:54:01Z"
+    "pushed_at": "2026-04-24T09:07:04Z"
   },
   {
     "name": "neo-pkg-llm-chat",
     "description": "LLM-based chat interface",
-    "icon": null,
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-llm-chat",
@@ -48,12 +48,12 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-24T08:06:04Z"
+    "pushed_at": "2026-04-24T09:17:58Z"
   },
   {
     "name": "neo-pkg-blackbox",
-    "description": "video recording tool",
-    "icon": null,
+    "description": "Video recording tool",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/icon.png",
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-blackbox",
@@ -65,6 +65,6 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-24T08:49:49Z"
+    "pushed_at": "2026-04-24T09:13:44Z"
   }
 ]
