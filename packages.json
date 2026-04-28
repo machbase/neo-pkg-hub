@@ -38,7 +38,7 @@
   {
     "name": "neo-pkg-llm-chat",
     "description": "LLM-based chat interface",
-    "version":"1.0.0",
+    "version":"1.0.1",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
     "github": {
       "organization": "machbase",
