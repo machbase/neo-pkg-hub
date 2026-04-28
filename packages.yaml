@@ -4,15 +4,19 @@ packages:
     - name: neo-pkg-replication
       organization: machbase
       repo: neo-pkg-replication
+      docs: neo-pkg-replication/docs/index.en.md
 
     - name: neo-pkg-opcua-client
       organization: machbase
       repo: neo-pkg-opcua-client
+      docs: neo-pkg-opcua-client/docs/index.en.md
 
     - name: neo-pkg-llm-chat
       organization: machbase
       repo: neo-pkg-llm-chat
+      docs: neo-pkg-llm-chat/docs/index.en.md
 
     - name: neo-pkg-blackbox
       organization: machbase
       repo: neo-pkg-blackbox
+      docs: neo-pkg-blackbox/docs/index.en.md
