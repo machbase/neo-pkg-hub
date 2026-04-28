@@ -56,7 +56,7 @@
   {
     "name": "neo-pkg-blackbox",
     "description": "Video recording tool",
-    "version":"1.0.1",
+    "version":"1.0.2",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/icon.png",
     "github": {
       "organization": "machbase",
