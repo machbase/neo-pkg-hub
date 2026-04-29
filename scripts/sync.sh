@@ -28,6 +28,11 @@ for ((i=0; i<count; i++)); do
 
   default_branch=$(echo "$repo_json" | jq -r '.default_branch')
   full_name=$(echo "$repo_json" | jq -r '.full_name')
+
+  release_json=$(curl -sSL "${AUTH_HEADER[@]}" \
+    -H "Accept: application/vnd.github+json" \
+    "$GH_API/repos/$org/$repo/releases/latest" || echo '{}')
+  version=$(echo "$release_json" | jq -r '.tag_name // ""')
   if [[ -n "$icon_override" ]]; then
     icon_url="$icon_override"
   else
@@ -53,10 +58,12 @@ for ((i=0; i<count; i++)); do
     --arg repo "$repo" \
     --arg icon "$icon_url" \
     --arg docs "$docs_url" \
+    --arg version "$version" \
     --argjson r "$repo_json" \
     '{
       name: $name,
       description: ($r.description // ""),
+      version: (if $version == "" then null else $version end),
       icon: (if $icon == "" then null else $icon end),
       docs: (if $docs == "" then null else $docs end),
       github: {
