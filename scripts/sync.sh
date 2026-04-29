@@ -33,6 +33,7 @@ for ((i=0; i<count; i++)); do
     -H "Accept: application/vnd.github+json" \
     "$GH_API/repos/$org/$repo/releases/latest" || echo '{}')
   version=$(echo "$release_json" | jq -r '.tag_name // ""')
+  released_at=$(echo "$release_json" | jq -r '.published_at // ""')
   if [[ -n "$icon_override" ]]; then
     icon_url="$icon_override"
   else
@@ -52,13 +53,17 @@ for ((i=0; i<count; i++)); do
     docs_url="https://raw.githubusercontent.com/${full_name}/${default_branch}/${docs_rel}"
   fi
 
+  homepage_url=$(echo "$repo_json" | jq -r '.homepage // ""')
+
   entry=$(jq -n \
     --arg name "$name" \
     --arg org "$org" \
     --arg repo "$repo" \
     --arg icon "$icon_url" \
     --arg docs "$docs_url" \
+    --arg homepage "$homepage_url" \
     --arg version "$version" \
+    --arg released_at "$released_at" \
     --argjson r "$repo_json" \
     '{
       name: $name,
@@ -66,6 +71,7 @@ for ((i=0; i<count; i++)); do
       version: (if $version == "" then null else $version end),
       icon: (if $icon == "" then null else $icon end),
       docs: (if $docs == "" then null else $docs end),
+      homepage: (if $homepage == "" then null else $homepage end),
       github: {
         organization: $org,
         repo: $repo,
@@ -77,7 +83,7 @@ for ((i=0; i<count; i++)); do
         stargazers_count: $r.stargazers_count,
         forks_count: $r.forks_count
       },
-      pushed_at: $r.pushed_at
+      released_at: (if $released_at == "" then null else $released_at end)
     }')
 
   results=$(echo "$results" | jq --argjson e "$entry" '. + [$e]')
