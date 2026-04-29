@@ -18,6 +18,7 @@ for ((i=0; i<count; i++)); do
   org=$(yq -r ".packages[$i].organization" "$PACKAGES_YAML")
   repo=$(yq -r ".packages[$i].repo" "$PACKAGES_YAML")
   icon_override=$(yq -r ".packages[$i].icon // \"\"" "$PACKAGES_YAML")
+  docs_path=$(yq -r ".packages[$i].docs // \"\"" "$PACKAGES_YAML")
 
   echo "Syncing: $org/$repo (name: $name)"
 
@@ -27,6 +28,11 @@ for ((i=0; i<count; i++)); do
 
   default_branch=$(echo "$repo_json" | jq -r '.default_branch')
   full_name=$(echo "$repo_json" | jq -r '.full_name')
+
+  release_json=$(curl -sSL "${AUTH_HEADER[@]}" \
+    -H "Accept: application/vnd.github+json" \
+    "$GH_API/repos/$org/$repo/releases/latest" || echo '{}')
+  version=$(echo "$release_json" | jq -r '.tag_name // ""')
   if [[ -n "$icon_override" ]]; then
     icon_url="$icon_override"
   else
@@ -40,16 +46,26 @@ for ((i=0; i<count; i++)); do
     done
   fi
 
+  docs_url=""
+  if [[ -n "$docs_path" ]]; then
+    docs_rel="${docs_path#${repo}/}"
+    docs_url="https://raw.githubusercontent.com/${full_name}/${default_branch}/${docs_rel}"
+  fi
+
   entry=$(jq -n \
     --arg name "$name" \
     --arg org "$org" \
     --arg repo "$repo" \
     --arg icon "$icon_url" \
+    --arg docs "$docs_url" \
+    --arg version "$version" \
     --argjson r "$repo_json" \
     '{
       name: $name,
       description: ($r.description // ""),
+      version: (if $version == "" then null else $version end),
       icon: (if $icon == "" then null else $icon end),
+      docs: (if $docs == "" then null else $docs end),
       github: {
         organization: $org,
         repo: $repo,
