@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-replication",
@@ -16,7 +17,7 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-29T00:07:35Z"
+    "released_at": "2026-04-28T02:10:13Z"
   },
   {
     "name": "neo-pkg-opcua-client",
@@ -24,6 +25,7 @@
     "version": "1.0.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-opcua-client",
@@ -35,7 +37,7 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-29T00:07:35Z"
+    "released_at": "2026-04-28T02:08:29Z"
   },
   {
     "name": "neo-pkg-llm-chat",
@@ -43,6 +45,7 @@
     "version": "1.0.1",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-llm-chat",
@@ -54,14 +57,15 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-28T02:16:35Z"
+    "released_at": "2026-04-28T02:16:36Z"
   },
   {
     "name": "neo-pkg-blackbox",
     "description": "Video recording tool",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-blackbox",
@@ -73,6 +77,6 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "pushed_at": "2026-04-28T03:38:16Z"
+    "released_at": "2026-04-29T07:17:52Z"
   }
 ]
