@@ -2,7 +2,7 @@
   {
     "name": "neo-pkg-replication",
     "description": "Data replication tool",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -17,12 +17,12 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-04-28T02:10:13Z"
+    "released_at": "2026-04-30T03:35:30Z"
   },
   {
     "name": "neo-pkg-opcua-client",
     "description": "Collect OPC-UA Data",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -37,7 +37,7 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-04-28T02:08:29Z"
+    "released_at": "2026-04-30T03:36:06Z"
   },
   {
     "name": "neo-pkg-llm-chat",
