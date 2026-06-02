@@ -42,7 +42,7 @@
   {
     "name": "neo-pkg-llm-chat",
     "description": "LLM-based chat interface",
-    "version": "2.0.1",
+    "version": "2.5.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -57,7 +57,7 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-05-28T04:34:53Z"
+    "released_at": "2026-06-02T07:37:36Z"
   },
   {
     "name": "neo-pkg-blackbox",
