@@ -22,7 +22,7 @@
   {
     "name": "neo-pkg-opcua-client",
     "description": "Collect OPC-UA Data",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -37,7 +37,7 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-06-18T07:40:38Z"
+    "released_at": "2026-06-18T08:51:58Z"
   },
   {
     "name": "neo-pkg-llm-chat",
