@@ -14,16 +14,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
       - name: Install yq
         run: |
           sudo wget -qO /usr/local/bin/yq \
             https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
           sudo chmod +x /usr/local/bin/yq
 
+      - name: Install deps (semver)
+        run: npm install --no-audit --no-fund
+
       - name: Run sync
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash scripts/sync.sh
+
+      # Validate BEFORE committing — a format / completeness / monotonic violation
+      # fails the job so a broken packages.json is never pushed.
+      - name: Validate packages.json
+        run: node scripts/lib/validate.js packages.json
 
       - name: Commit changes
         run: |

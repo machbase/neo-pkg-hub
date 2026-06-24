@@ -1,0 +1,12 @@
+{
+  "name": "neo-pkg-hub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Central hub for managing Neo packages",
+  "scripts": {
+    "validate": "node scripts/lib/validate.js packages.json"
+  },
+  "devDependencies": {
+    "semver": "^7.6.3"
+  }
+}
