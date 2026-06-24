@@ -17,7 +17,14 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-05-28T04:36:20Z"
+    "released_at": "2026-05-28T04:36:20Z",
+    "versions": [
+      { "version": "1.0.4", "minServer": "8.5.4", "released_at": "2026-05-28T04:36:20Z" },
+      { "version": "1.0.3", "minServer": "8.5.4", "released_at": "2026-05-18T00:35:32Z" },
+      { "version": "1.0.2", "minServer": "8.5.4", "released_at": "2026-05-13T08:04:02Z" },
+      { "version": "1.0.1", "minServer": "8.5.4", "released_at": "2026-04-30T03:35:30Z" },
+      { "version": "1.0.0", "minServer": "8.5.0", "released_at": "2026-04-28T02:10:13Z" }
+    ]
   },
   {
     "name": "neo-pkg-opcua-client",
@@ -37,7 +44,15 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-06-18T08:51:58Z"
+    "released_at": "2026-06-18T08:51:58Z",
+    "versions": [
+      { "version": "1.0.5", "minServer": "8.5.4", "released_at": "2026-06-18T08:51:58Z" },
+      { "version": "1.0.4", "minServer": "8.5.4", "released_at": "2026-06-18T07:40:38Z" },
+      { "version": "1.0.3", "minServer": "8.5.4", "released_at": "2026-05-18T00:46:45Z" },
+      { "version": "1.0.2", "minServer": "8.5.4", "released_at": "2026-05-13T08:07:29Z" },
+      { "version": "1.0.1", "minServer": "8.5.4", "released_at": "2026-04-30T03:36:06Z" },
+      { "version": "1.0.0", "minServer": "8.5.0", "released_at": "2026-04-28T02:08:29Z" }
+    ]
   },
   {
     "name": "neo-pkg-llm-chat",
@@ -57,7 +72,13 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-06-02T07:37:36Z"
+    "released_at": "2026-06-02T07:37:36Z",
+    "versions": [
+      { "version": "2.5.0", "minServer": "8.5.4", "released_at": "2026-06-02T07:37:36Z" },
+      { "version": "2.0.1", "minServer": "8.5.4", "released_at": "2026-05-28T04:34:53Z" },
+      { "version": "2.0.0", "minServer": "8.5.4", "released_at": "2026-05-27T05:08:13Z" },
+      { "version": "1.0.1", "minServer": "8.5.0", "released_at": "2026-04-28T02:16:36Z" }
+    ]
   },
   {
     "name": "neo-pkg-blackbox",
@@ -77,6 +98,17 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-06-18T07:48:22Z"
+    "released_at": "2026-06-18T07:48:22Z",
+    "versions": [
+      { "version": "v1.0.9", "minServer": "8.5.4", "released_at": "2026-06-18T07:48:22Z" },
+      { "version": "1.0.8", "minServer": "8.5.4", "released_at": "2026-05-28T04:36:55Z" },
+      { "version": "1.0.7", "minServer": "8.5.4", "released_at": "2026-05-18T00:47:31Z" },
+      { "version": "1.0.6", "minServer": "8.5.4", "released_at": "2026-05-14T01:50:30Z" },
+      { "version": "v1.0.5", "minServer": "8.5.4", "released_at": "2026-05-14T01:41:12Z" },
+      { "version": "1.0.3", "minServer": "8.5.4", "released_at": "2026-04-29T07:17:52Z" },
+      { "version": "1.0.2", "minServer": "8.5.4", "released_at": "2026-04-28T03:38:16Z" },
+      { "version": "1.0.1", "minServer": "8.5.4", "released_at": "2026-04-28T03:08:28Z" },
+      { "version": "1.0.0", "minServer": "8.5.0", "released_at": "2026-04-28T02:15:43Z" }
+    ]
   }
 ]

@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Publishes packages.json in the versions[] schema (issue machbase/neo#1369).
+#
+# packages.json is a NON-DESTRUCTIVE version-history accumulator: each package keeps
+# a `versions: [{version, minServer, released_at}]` list. This script reads the
+# existing packages.json, refreshes repo metadata, and PREPENDS only newly-released
+# versions — existing rows (and their hand-curated / previously auto-filled minServer
+# values) are carried forward verbatim, so daily syncs never wipe minServer data.
+#
+# The top-level `version`/`released_at` mirror versions[0] (latest) for backward
+# compatibility with clients that predate the versions[] schema.
+
 PACKAGES_YAML="${PACKAGES_YAML:-packages.yaml}"
 OUTPUT_JSON="${OUTPUT_JSON:-packages.json}"
 GH_API="${GH_API:-https://api.github.com}"
@@ -8,6 +19,13 @@ GH_API="${GH_API:-https://api.github.com}"
 AUTH_HEADER=()
 if [[ -n "${GITHUB_TOKEN:-}" ]]; then
   AUTH_HEADER=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
+fi
+
+# Existing accumulator (empty array on first run).
+if [[ -f "$OUTPUT_JSON" ]]; then
+  existing=$(cat "$OUTPUT_JSON")
+else
+  existing="[]"
 fi
 
 count=$(yq '.packages | length' "$PACKAGES_YAML")
@@ -34,6 +52,7 @@ for ((i=0; i<count; i++)); do
     "$GH_API/repos/$org/$repo/releases/latest" || echo '{}')
   version=$(echo "$release_json" | jq -r '.tag_name // ""')
   released_at=$(echo "$release_json" | jq -r '.published_at // ""')
+
   if [[ -n "$icon_override" ]]; then
     icon_url="$icon_override"
   else
@@ -55,6 +74,39 @@ for ((i=0; i<count; i++)); do
 
   homepage_url=$(echo "$repo_json" | jq -r '.homepage // ""')
 
+  # ---- versions[] non-destructive merge --------------------------------------
+  prev_versions=$(echo "$existing" | jq --arg name "$name" \
+    '(map(select(.name == $name)) | .[0].versions) // []')
+
+  present="false"
+  if [[ -n "$version" ]]; then
+    present=$(echo "$prev_versions" | jq --arg v "$version" 'any(.[]; .version == $v)')
+  fi
+
+  if [[ -n "$version" && "$present" != "true" ]]; then
+    # New release: auto-fill minServer from package.json at the release TAG (not the
+    # default branch). Missing/empty → left blank for manual backfill; the validator
+    # flags it (gate 3a/3c).
+    min_server=""
+    pkg_meta=$(curl -fsSL "${AUTH_HEADER[@]}" \
+      -H "Accept: application/vnd.github+json" \
+      "$GH_API/repos/$org/$repo/contents/package.json?ref=$version" 2>/dev/null || echo "")
+    if [[ -n "$pkg_meta" ]]; then
+      decoded=$(echo "$pkg_meta" | jq -r '.content // ""' | base64 -d 2>/dev/null || echo "")
+      min_server=$(echo "$decoded" | jq -r '.minServerVersion // ""' 2>/dev/null || echo "")
+    fi
+    new_row=$(jq -n --arg v "$version" --arg m "$min_server" --arg r "$released_at" \
+      '{version: $v, minServer: $m, released_at: (if $r == "" then null else $r end)}')
+    versions=$(echo "$prev_versions" | jq --argjson new "$new_row" '[$new] + .')
+    echo "  + new version $version (minServer: ${min_server:-<empty — backfill needed>})"
+  else
+    versions="$prev_versions"
+  fi
+
+  # Top-level mirror = latest (versions[0]).
+  top_version=$(echo "$versions" | jq -r '.[0].version // ""')
+  top_released=$(echo "$versions" | jq -r '.[0].released_at // ""')
+
   entry=$(jq -n \
     --arg name "$name" \
     --arg org "$org" \
@@ -62,8 +114,9 @@ for ((i=0; i<count; i++)); do
     --arg icon "$icon_url" \
     --arg docs "$docs_url" \
     --arg homepage "$homepage_url" \
-    --arg version "$version" \
-    --arg released_at "$released_at" \
+    --arg version "$top_version" \
+    --arg released_at "$top_released" \
+    --argjson versions "$versions" \
     --argjson r "$repo_json" \
     '{
       name: $name,
@@ -83,7 +136,8 @@ for ((i=0; i<count; i++)); do
         stargazers_count: $r.stargazers_count,
         forks_count: $r.forks_count
       },
-      released_at: (if $released_at == "" then null else $released_at end)
+      released_at: (if $released_at == "" then null else $released_at end),
+      versions: $versions
     }')
 
   results=$(echo "$results" | jq --argjson e "$entry" '. + [$e]')
