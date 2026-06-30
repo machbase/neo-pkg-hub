@@ -2,7 +2,7 @@
   {
     "name": "neo-pkg-replication",
     "description": "Data replication tool",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -17,8 +17,13 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-05-28T04:36:20Z",
+    "released_at": "2026-06-30T02:25:11Z",
     "versions": [
+      {
+        "version": "1.0.5",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-30T02:25:11Z"
+      },
       {
         "version": "1.0.4",
         "minServer": "8.5.4",
