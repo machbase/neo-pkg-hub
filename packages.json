@@ -2,7 +2,7 @@
   {
     "name": "neo-pkg-replication",
     "description": "Data replication tool",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -17,8 +17,13 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-06-30T02:25:11Z",
+    "released_at": "2026-07-01T08:11:20Z",
     "versions": [
+      {
+        "version": "1.0.6",
+        "minServer": "8.5.6",
+        "released_at": "2026-07-01T08:11:20Z"
+      },
       {
         "version": "1.0.5",
         "minServer": "8.5.4",
@@ -54,7 +59,7 @@
   {
     "name": "neo-pkg-opcua-client",
     "description": "Collect OPC-UA Data",
-    "version": "1.0.6",
+    "version": "1.0.7",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -69,8 +74,13 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-06-24T05:07:14Z",
+    "released_at": "2026-07-01T07:53:39Z",
     "versions": [
+      {
+        "version": "1.0.7",
+        "minServer": "8.5.6",
+        "released_at": "2026-07-01T07:53:39Z"
+      },
       {
         "version": "1.0.6",
         "minServer": "8.5.4",
