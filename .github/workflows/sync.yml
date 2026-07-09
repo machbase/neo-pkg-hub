@@ -32,10 +32,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash scripts/sync.sh
 
-      # Validate BEFORE committing — a format / completeness / monotonic violation
-      # fails the job so a broken packages.json is never pushed.
+      # Validate BEFORE committing — a format / completeness / monotonic violation,
+      # or an icon that regressed against the committed baseline, fails the job so a
+      # broken packages.json is never pushed.
       - name: Validate packages.json
-        run: node scripts/lib/validate.js packages.json
+        run: |
+          git show HEAD:packages.json > /tmp/packages.baseline.json 2>/dev/null || true
+          node scripts/lib/validate.js packages.json /tmp/packages.baseline.json
 
       - name: Commit changes
         run: |

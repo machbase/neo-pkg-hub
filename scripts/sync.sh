@@ -21,6 +21,23 @@ if [[ -n "${GITHUB_TOKEN:-}" ]]; then
   AUTH_HEADER=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
 fi
 
+# Returns the HTTP status of an authenticated Contents API probe, retrying while
+# the answer is neither 200 nor 404. Probing raw.githubusercontent.com instead
+# would be anonymous and IP-rate-limited: a 429 there is indistinguishable from a
+# 404 under `curl -f`, which is how a throttled run once blanked every icon.
+probe_status() {
+  local url="$1" code attempt
+  for attempt in 1 2 3; do
+    code=$(curl -sSL -o /dev/null -w '%{http_code}' "${AUTH_HEADER[@]}" \
+      -H "Accept: application/vnd.github+json" "$url" || echo 000)
+    case "$code" in
+      200|404) break ;;
+    esac
+    if [[ $attempt -lt 3 ]]; then sleep $((attempt * 2)); fi
+  done
+  echo "$code"
+}
+
 # Existing accumulator (empty array on first run).
 if [[ -f "$OUTPUT_JSON" ]]; then
   existing=$(cat "$OUTPUT_JSON")
@@ -53,17 +70,33 @@ for ((i=0; i<count; i++)); do
   version=$(echo "$release_json" | jq -r '.tag_name // ""')
   released_at=$(echo "$release_json" | jq -r '.published_at // ""')
 
+  prev_icon=$(echo "$existing" | jq -r --arg name "$name" \
+    '(map(select(.name == $name)) | .[0].icon) // ""')
+
   if [[ -n "$icon_override" ]]; then
     icon_url="$icon_override"
   else
     icon_url=""
+    icon_unknown="false"
     for ext in svg png; do
-      candidate="https://raw.githubusercontent.com/${full_name}/${default_branch}/icon.${ext}"
-      if curl -fsSL -o /dev/null -I "$candidate"; then
-        icon_url="$candidate"
+      code=$(probe_status "$GH_API/repos/$org/$repo/contents/icon.${ext}?ref=${default_branch}")
+      if [[ "$code" == "200" ]]; then
+        icon_url="https://raw.githubusercontent.com/${full_name}/${default_branch}/icon.${ext}"
         break
       fi
+      if [[ "$code" != "404" ]]; then
+        icon_unknown="true"
+        echo "  ! icon.${ext} probe inconclusive (HTTP $code)"
+      fi
     done
+
+    # Only an authoritative 404 on every candidate may clear the icon. If any probe
+    # was inconclusive the last known-good value wins, so a transient failure can
+    # never regress a published icon.
+    if [[ "$icon_unknown" == "true" && -n "$prev_icon" ]]; then
+      icon_url="$prev_icon"
+      echo "  = icon probe inconclusive, keeping previous: $icon_url"
+    fi
   fi
 
   docs_url=""

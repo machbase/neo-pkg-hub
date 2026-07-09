@@ -15,6 +15,12 @@
 //                   ships package.json `minServerVersion`).
 //   - monotonic:    within a package, a newer version's minServer is >= an older
 //                   version's minServer.
+//   - no-regression: against an optional baseline (argv[3], the committed
+//                   packages.json), a package that had an icon must still have one.
+//                   A throttled icon probe once blanked three icons and the job
+//                   pushed it, because nothing compared the result to the baseline.
+//                   When an icon is deliberately deleted upstream, re-run with
+//                   ALLOW_ICON_REMOVAL=1 to let the removal through.
 //
 // Exit 1 on any error.
 
@@ -22,15 +28,19 @@ const fs = require('fs');
 const semver = require('semver');
 
 const file = process.argv[2] || 'packages.json';
+const baselineFile = process.argv[3] || null;
 const STRICT = process.env.STRICT_MIN_SERVER === '1';
+const ALLOW_ICON_REMOVAL = process.env.ALLOW_ICON_REMOVAL === '1';
 
 const strip = (v) => String(v || '').trim().replace(/^v/i, '');
 const errors = [];
 const warnings = [];
 
+const readJson = (path) => JSON.parse(fs.readFileSync(path, 'utf8'));
+
 let data;
 try {
-    data = JSON.parse(fs.readFileSync(file, 'utf8'));
+    data = readJson(file);
 } catch (e) {
     console.error(`ERROR cannot read/parse ${file}: ${e.message}`);
     process.exit(1);
@@ -40,9 +50,34 @@ if (!Array.isArray(data)) {
     process.exit(1);
 }
 
+// Baseline is advisory: absent or unreadable (first run, fresh clone) just skips
+// the regression gate rather than failing the sync.
+let baseline = [];
+if (baselineFile) {
+    try {
+        const parsed = readJson(baselineFile);
+        if (Array.isArray(parsed)) baseline = parsed;
+        else warnings.push(`baseline ${baselineFile} is not an array — skipping regression gate`);
+    } catch {
+        warnings.push(`baseline ${baselineFile} unreadable — skipping regression gate`);
+    }
+}
+const baselineByName = new Map(baseline.map((p) => [p.name, p]));
+
 for (const pkg of data) {
     const name = pkg && pkg.name ? pkg.name : '<unnamed>';
     const versions = Array.isArray(pkg.versions) ? pkg.versions : null;
+
+    // no-regression — an icon that was published must not silently disappear.
+    const before = baselineByName.get(name);
+    if (before && before.icon && !pkg.icon) {
+        const msg = `${name}: icon dropped (was "${before.icon}")`;
+        if (ALLOW_ICON_REMOVAL) {
+            warnings.push(`${msg} — allowed via ALLOW_ICON_REMOVAL`);
+        } else {
+            errors.push(`${msg} — a failed probe, not a real removal? re-run, or set ALLOW_ICON_REMOVAL=1 if intended`);
+        }
+    }
 
     // schema
     if (!versions || versions.length === 0) {
