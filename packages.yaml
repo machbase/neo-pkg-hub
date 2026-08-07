@@ -1,22 +1,42 @@
 # icon 필드는 선택사항. 생략 시 각 저장소 루트의 icon.svg → icon.png 순으로 자동 감지
 # (https://raw.githubusercontent.com/{full_name}/{default_branch}/icon.{svg,png})
+#
+# experiment 필드는 전 패키지 필수. true 면 neo 서버 experiment 모드가 켜진
+# 사용자에게만 카탈로그에 노출된다 (machbase/neo#1438). 키를 빠뜨리거나
+# boolean 이 아닌 값(yes / "false" / 1)을 쓰면 CI 가 실패한다.
 packages:
     - name: neo-pkg-replication
       organization: machbase
       repo: neo-pkg-replication
       docs: neo-pkg-replication/docs/index.en.md
+      experiment: false
 
     - name: neo-pkg-opcua-client
       organization: machbase
       repo: neo-pkg-opcua-client
       docs: neo-pkg-opcua-client/docs/index.en.md
+      experiment: false
 
     - name: neo-pkg-llm-chat
       organization: machbase
       repo: neo-pkg-llm-chat
       docs: neo-pkg-llm-chat/docs/index.en.md
+      experiment: false
 
     - name: neo-pkg-blackbox
       organization: machbase
       repo: neo-pkg-blackbox
       docs: neo-pkg-blackbox/docs/index.en.md
+      experiment: false
+
+    - name: neo-pkg-dbus
+      organization: machbase
+      repo: neo-pkg-dbus
+      docs: neo-pkg-dbus/docs/index.en.md
+      experiment: true
+
+    - name: neo-pkg-vibe-analytics
+      organization: machbase
+      repo: neo-pkg-vibe-analytics
+      docs: neo-pkg-vibe-analytics/docs/index.en.md
+      experiment: true

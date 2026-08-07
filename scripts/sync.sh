@@ -11,9 +11,32 @@ set -euo pipefail
 #
 # The top-level `version`/`released_at` mirror versions[0] (latest) for backward
 # compatibility with clients that predate the versions[] schema.
+#
+# Two files are published, distinguished by the `experiment` gate (machbase/neo#1438):
+#
+#   packages.json      non-experiment packages ONLY  — the legacy view
+#   packages-all.json  every package, each carrying its `experiment` flag
+#
+# Non-experiment packages therefore appear in BOTH files. That redundancy is the
+# point, and it buys two things:
+#
+#  1. Legacy safety. A client renders whatever the file it fetches contains, so a
+#     field it does not know about cannot hide anything — a single file with an
+#     `experiment` flag is fail-OPEN for every neo-web build predating the feature.
+#     Old builds only ever fetch packages.json, so leaving the entry out of that
+#     file is the only mechanism that actually hides it.
+#  2. Atomicity. Current neo-web reads packages-all.json and nothing else, so it
+#     never has to reconcile two independently-cached responses. Splitting the data
+#     across two files instead (stable here, experiment there) would let a package
+#     in transition appear in both or neither for up to the 5 minute
+#     raw.githubusercontent max-age, showing a duplicate card or none at all.
+#
+# Both files are ALWAYS written, empty ones as `[]` — neo-web treats a non-ok fetch
+# as an error, so a missing file would break the whole catalog.
 
 PACKAGES_YAML="${PACKAGES_YAML:-packages.yaml}"
 OUTPUT_JSON="${OUTPUT_JSON:-packages.json}"
+ALL_JSON="${ALL_JSON:-packages-all.json}"
 GH_API="${GH_API:-https://api.github.com}"
 
 AUTH_HEADER=()
@@ -38,15 +61,20 @@ probe_status() {
   echo "$code"
 }
 
-# Existing accumulator (empty array on first run).
-if [[ -f "$OUTPUT_JSON" ]]; then
-  existing=$(cat "$OUTPUT_JSON")
-else
-  existing="[]"
-fi
+# Existing accumulator (empty array on first run). packages-all.json is the superset
+# and is read first so its rows win the `.[0]` lookups below; packages.json is read
+# as a fallback so the very first run after this split still inherits the version
+# history that only exists in the legacy file. A package flipping `experiment` keeps
+# its versions[] and icon either way — it is the same accumulator on both sides.
+existing="[]"
+for prev_file in "$ALL_JSON" "$OUTPUT_JSON"; do
+  [[ -f "$prev_file" ]] || continue
+  existing=$(echo "$existing" | jq --slurpfile prev "$prev_file" '. + ($prev[0] // [])')
+done
 
 count=$(yq '.packages | length' "$PACKAGES_YAML")
 results="[]"
+all_results="[]"
 
 for ((i=0; i<count; i++)); do
   name=$(yq -r ".packages[$i].name" "$PACKAGES_YAML")
@@ -54,6 +82,14 @@ for ((i=0; i<count; i++)); do
   repo=$(yq -r ".packages[$i].repo" "$PACKAGES_YAML")
   icon_override=$(yq -r ".packages[$i].icon // \"\"" "$PACKAGES_YAML")
   docs_path=$(yq -r ".packages[$i].docs // \"\"" "$PACKAGES_YAML")
+  # Catalog visibility gate (issue machbase/neo#1438). Package-scoped, not per
+  # version — the version axis is versions[].minServer. packages.yaml is the ONLY
+  # source of truth: this file is regenerated wholesale below, so a hand-edit in
+  # packages.json is silently dropped on the next sync. Value validity is enforced
+  # in CI before this script runs; the guard here only keeps a non-boolean from
+  # ever reaching `--argjson`.
+  experiment=$(yq -r ".packages[$i].experiment // false" "$PACKAGES_YAML")
+  [[ "$experiment" == "true" ]] || experiment="false"
 
   echo "Syncing: $org/$repo (name: $name)"
 
@@ -150,6 +186,7 @@ for ((i=0; i<count; i++)); do
     --arg version "$top_version" \
     --arg released_at "$top_released" \
     --argjson versions "$versions" \
+    --argjson experiment "$experiment" \
     --argjson r "$repo_json" \
     '{
       name: $name,
@@ -158,6 +195,7 @@ for ((i=0; i<count; i++)); do
       icon: (if $icon == "" then null else $icon end),
       docs: (if $docs == "" then null else $docs end),
       homepage: (if $homepage == "" then null else $homepage end),
+      experiment: $experiment,
       github: {
         organization: $org,
         repo: $repo,
@@ -173,8 +211,16 @@ for ((i=0; i<count; i++)); do
       versions: $versions
     }')
 
-  results=$(echo "$results" | jq --argjson e "$entry" '. + [$e]')
+  # Every package goes into the experiment-aware view. Only non-experiment ones are
+  # also written to the legacy view — an experiment package must never land in
+  # packages.json, which is what old neo-web builds render unconditionally.
+  all_results=$(echo "$all_results" | jq --argjson e "$entry" '. + [$e]')
+  if [[ "$experiment" != "true" ]]; then
+    results=$(echo "$results" | jq --argjson e "$entry" '. + [$e]')
+  fi
 done
 
 echo "$results" | jq '.' > "$OUTPUT_JSON"
-echo "Wrote $OUTPUT_JSON"
+echo "$all_results" | jq '.' > "$ALL_JSON"
+echo "Wrote $OUTPUT_JSON ($(echo "$results" | jq 'length') packages, legacy view)"
+echo "Wrote $ALL_JSON ($(echo "$all_results" | jq 'length') packages, $(echo "$all_results" | jq '[.[] | select(.experiment)] | length') experiment)"

@@ -1,6 +1,15 @@
 name: sync packages
 
 on:
+  # packages.yaml is the source of truth for the experiment gate, so a change to
+  # it must publish immediately — waiting for the nightly cron would leave a
+  # package exposed (or hidden) for up to 24h. The bot commit only touches
+  # packages.json and carries [skip ci], so this cannot loop.
+  push:
+    branches: [main]
+    paths: ['packages.yaml']
+  pull_request:
+    paths: ['packages.yaml']
   schedule:
     - cron: '0 0 * * *'
   workflow_dispatch:
@@ -9,7 +18,45 @@ permissions:
   contents: write
 
 jobs:
+  # Gate packages.yaml BEFORE anything regenerates packages.json. Runs on pull
+  # requests too: `experiment` is a required key, so a forgotten or misspelled
+  # one would otherwise reach main and fail every subsequent nightly sync —
+  # blocking publication for every package, not just the new one.
+  validate-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yq
+        run: |
+          sudo wget -qO /usr/local/bin/yq \
+            https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+
+      # A key typo (`experment:`) surfaces as a missing key, and a YAML 1.1 habit
+      # (`experiment: yes`) or a quoted value surfaces as a non-boolean. Both
+      # would silently resolve to false — i.e. publish an unvalidated package to
+      # every user — so both are hard failures.
+      - name: Check experiment field
+        run: |
+          missing=$(yq -o=json -I=0 '[.packages[] | select(has("experiment") | not) | .name]' packages.yaml)
+          nonbool=$(yq -o=json -I=0 '[.packages[] | select(has("experiment")) | select(.experiment | tag != "!!bool") | .name]' packages.yaml)
+          fail=0
+          if [[ "$missing" != "[]" ]]; then
+            echo "ERROR experiment key missing (typo?): $missing"
+            fail=1
+          fi
+          if [[ "$nonbool" != "[]" ]]; then
+            echo "ERROR experiment must be a YAML boolean true/false (not yes/no, \"false\", or 1): $nonbool"
+            fail=1
+          fi
+          exit $fail
+
   sync:
+    needs: validate-yaml
+    # Pull requests validate packages.yaml only — they must never regenerate or
+    # push packages.json.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,17 +81,38 @@ jobs:
 
       # Validate BEFORE committing — a format / completeness / monotonic violation,
       # or an icon that regressed against the committed baseline, fails the job so a
-      # broken packages.json is never pushed.
-      - name: Validate packages.json
+      # broken file is never pushed. Both published files are gated, each against
+      # its own baseline.
+      - name: Validate published files
         run: |
           git show HEAD:packages.json > /tmp/packages.baseline.json 2>/dev/null || true
+          git show HEAD:packages-all.json > /tmp/all.baseline.json 2>/dev/null || true
           node scripts/lib/validate.js packages.json /tmp/packages.baseline.json
+          node scripts/lib/validate.js packages-all.json /tmp/all.baseline.json
+
+      # The gate's whole legacy guarantee is that packages.json never carries an
+      # experiment entry — old neo-web builds render that file unconditionally, so
+      # one leak there defeats it. Also assert packages.json is a strict subset of
+      # packages-all.json, which catches the two files drifting apart.
+      - name: Assert legacy view integrity
+        run: |
+          leaked=$(jq -c '[.[] | select(.experiment == true) | .name]' packages.json)
+          if [[ "$leaked" != "[]" ]]; then
+            echo "ERROR experiment packages leaked into packages.json: $leaked"
+            exit 1
+          fi
+          missing=$(jq -c --slurpfile all packages-all.json \
+            '[.[] | select(.name as $n | ($all[0] | map(.name) | index($n)) == null) | .name]' packages.json)
+          if [[ "$missing" != "[]" ]]; then
+            echo "ERROR packages.json entries absent from packages-all.json: $missing"
+            exit 1
+          fi
 
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add packages.json
+          git add packages.json packages-all.json
           if git diff --staged --quiet; then
             echo "No changes"
           else

@@ -1,0 +1,288 @@
+[
+  {
+    "name": "neo-pkg-replication",
+    "description": "Data replication tool",
+    "version": "1.0.6",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
+    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
+    "experiment": false,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-replication",
+      "full_name": "machbase/neo-pkg-replication",
+      "html_url": "https://github.com/machbase/neo-pkg-replication",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 1,
+      "forks_count": 0
+    },
+    "released_at": "2026-07-01T08:11:20Z",
+    "versions": [
+      {
+        "version": "1.0.6",
+        "minServer": "8.5.6",
+        "released_at": "2026-07-01T08:11:20Z"
+      },
+      {
+        "version": "1.0.5",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-30T02:25:11Z"
+      },
+      {
+        "version": "1.0.4",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-28T04:36:20Z"
+      },
+      {
+        "version": "1.0.3",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-18T00:35:32Z"
+      },
+      {
+        "version": "1.0.2",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-13T08:04:02Z"
+      },
+      {
+        "version": "1.0.1",
+        "minServer": "8.5.4",
+        "released_at": "2026-04-30T03:35:30Z"
+      },
+      {
+        "version": "1.0.0",
+        "minServer": "8.5.0",
+        "released_at": "2026-04-28T02:10:13Z"
+      }
+    ]
+  },
+  {
+    "name": "neo-pkg-opcua-client",
+    "description": "Collect OPC-UA Data",
+    "version": "1.0.7",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
+    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
+    "experiment": false,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-opcua-client",
+      "full_name": "machbase/neo-pkg-opcua-client",
+      "html_url": "https://github.com/machbase/neo-pkg-opcua-client",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 1,
+      "forks_count": 0
+    },
+    "released_at": "2026-07-01T07:53:39Z",
+    "versions": [
+      {
+        "version": "1.0.7",
+        "minServer": "8.5.6",
+        "released_at": "2026-07-01T07:53:39Z"
+      },
+      {
+        "version": "1.0.6",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-24T05:07:14Z"
+      },
+      {
+        "version": "1.0.5",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-18T08:51:58Z"
+      },
+      {
+        "version": "1.0.4",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-18T07:40:38Z"
+      },
+      {
+        "version": "1.0.3",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-18T00:46:45Z"
+      },
+      {
+        "version": "1.0.2",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-13T08:07:29Z"
+      },
+      {
+        "version": "1.0.1",
+        "minServer": "8.5.4",
+        "released_at": "2026-04-30T03:36:06Z"
+      },
+      {
+        "version": "1.0.0",
+        "minServer": "8.5.0",
+        "released_at": "2026-04-28T02:08:29Z"
+      }
+    ]
+  },
+  {
+    "name": "neo-pkg-llm-chat",
+    "description": "LLM-based chat interface",
+    "version": "3.2.2",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
+    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
+    "experiment": false,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-llm-chat",
+      "full_name": "machbase/neo-pkg-llm-chat",
+      "html_url": "https://github.com/machbase/neo-pkg-llm-chat",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 1,
+      "forks_count": 0
+    },
+    "released_at": "2026-07-28T07:52:46Z",
+    "versions": [
+      {
+        "version": "3.2.2",
+        "minServer": "8.5.9",
+        "released_at": "2026-07-28T07:52:46Z"
+      },
+      {
+        "version": "3.0.0",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-29T07:27:36Z"
+      },
+      {
+        "version": "2.5.0",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-02T07:37:36Z"
+      },
+      {
+        "version": "2.0.1",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-28T04:34:53Z"
+      },
+      {
+        "version": "2.0.0",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-27T05:08:13Z"
+      },
+      {
+        "version": "1.0.1",
+        "minServer": "8.5.0",
+        "released_at": "2026-04-28T02:16:36Z"
+      }
+    ]
+  },
+  {
+    "name": "neo-pkg-blackbox",
+    "description": "Video recording tool",
+    "version": "v1.0.9",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/icon.png",
+    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/docs/index.en.md",
+    "homepage": "http://docs.machbase.com",
+    "experiment": false,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-blackbox",
+      "full_name": "machbase/neo-pkg-blackbox",
+      "html_url": "https://github.com/machbase/neo-pkg-blackbox",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 1,
+      "forks_count": 0
+    },
+    "released_at": "2026-06-18T07:48:22Z",
+    "versions": [
+      {
+        "version": "v1.0.9",
+        "minServer": "8.5.4",
+        "released_at": "2026-06-18T07:48:22Z"
+      },
+      {
+        "version": "1.0.8",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-28T04:36:55Z"
+      },
+      {
+        "version": "1.0.7",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-18T00:47:31Z"
+      },
+      {
+        "version": "1.0.6",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-14T01:50:30Z"
+      },
+      {
+        "version": "v1.0.5",
+        "minServer": "8.5.4",
+        "released_at": "2026-05-14T01:41:12Z"
+      },
+      {
+        "version": "1.0.3",
+        "minServer": "8.5.4",
+        "released_at": "2026-04-29T07:17:52Z"
+      },
+      {
+        "version": "1.0.2",
+        "minServer": "8.5.4",
+        "released_at": "2026-04-28T03:38:16Z"
+      },
+      {
+        "version": "1.0.1",
+        "minServer": "8.5.4",
+        "released_at": "2026-04-28T03:08:28Z"
+      },
+      {
+        "version": "1.0.0",
+        "minServer": "8.5.0",
+        "released_at": "2026-04-28T02:15:43Z"
+      }
+    ]
+  },
+  {
+    "name": "neo-pkg-dbus",
+    "description": "",
+    "version": null,
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-dbus/main/icon.svg",
+    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-dbus/main/docs/index.en.md",
+    "homepage": null,
+    "experiment": true,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-dbus",
+      "full_name": "machbase/neo-pkg-dbus",
+      "html_url": "https://github.com/machbase/neo-pkg-dbus",
+      "default_branch": "main",
+      "language": "JavaScript",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
+    },
+    "released_at": null,
+    "versions": []
+  },
+  {
+    "name": "neo-pkg-vibe-analytics",
+    "description": "",
+    "version": null,
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-vibe-analytics/main/icon.png",
+    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-vibe-analytics/main/docs/index.en.md",
+    "homepage": null,
+    "experiment": true,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-vibe-analytics",
+      "full_name": "machbase/neo-pkg-vibe-analytics",
+      "html_url": "https://github.com/machbase/neo-pkg-vibe-analytics",
+      "default_branch": "main",
+      "language": "HTML",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
+    },
+    "released_at": null,
+    "versions": []
+  }
+]

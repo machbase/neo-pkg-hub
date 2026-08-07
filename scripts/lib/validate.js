@@ -81,7 +81,11 @@ for (const pkg of data) {
 
     // schema
     if (!versions || versions.length === 0) {
-        errors.push(`${name}: missing or empty versions[]`);
+        // An experiment package is registered *while still under validation*, so
+        // having no GitHub release yet is its normal state — that is the flag's
+        // primary use case. Hard-erroring here would abort the sync job and stop
+        // publishing packages.json for every other package too.
+        (pkg.experiment ? warnings : errors).push(`${name}: missing or empty versions[]`);
         continue;
     }
     if (pkg.version !== versions[0].version) {
