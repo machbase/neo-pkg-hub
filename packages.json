@@ -6,6 +6,7 @@
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-replication/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
+    "experiment": false,
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-replication",
@@ -63,6 +64,7 @@
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
+    "experiment": false,
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-opcua-client",
@@ -125,6 +127,7 @@
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
+    "experiment": false,
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-llm-chat",
@@ -142,21 +145,6 @@
         "version": "3.2.2",
         "minServer": "8.5.9",
         "released_at": "2026-07-28T07:52:46Z"
-      },
-      {
-        "version": "3.2.1",
-        "minServer": "8.5.4",
-        "released_at": "2026-07-21T01:10:03Z"
-      },
-      {
-        "version": "3.2.0",
-        "minServer": "8.5.4",
-        "released_at": "2026-07-20T08:16:03Z"
-      },
-      {
-        "version": "3.1.0",
-        "minServer": "8.5.4",
-        "released_at": "2026-07-10T06:54:14Z"
       },
       {
         "version": "3.0.0",
@@ -192,6 +180,7 @@
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
+    "experiment": false,
     "github": {
       "organization": "machbase",
       "repo": "neo-pkg-blackbox",
