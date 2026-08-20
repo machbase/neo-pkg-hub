@@ -74,10 +74,25 @@ jobs:
       - name: Install deps (semver)
         run: npm install --no-audit --no-fund
 
+      # exit 2 is sync.sh's "published fine, but one or more repositories could not
+      # be read". Those packages kept their previous entry, so the output is still
+      # valid and MUST be committed — failing here instead would strand the catalog
+      # on an ever-staler file while fixing nothing. The job is failed at the very
+      # end, after the push, by "Fail on unreachable packages".
       - name: Run sync
+        id: sync
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash scripts/sync.sh
+        run: |
+          set +e
+          bash scripts/sync.sh
+          rc=$?
+          set -e
+          if [[ $rc -eq 2 ]]; then
+            echo "skipped=true" >> "$GITHUB_OUTPUT"
+          elif [[ $rc -ne 0 ]]; then
+            exit $rc
+          fi
 
       # Validate BEFORE committing — a format / completeness / monotonic violation,
       # or an icon that regressed against the committed baseline, fails the job so a
@@ -119,3 +134,14 @@ jobs:
             git commit -m "chore: sync packages [skip ci]"
             git push
           fi
+
+      # The hub deliberately never deletes an entry, so nothing else signals that a
+      # registered repository has gone dark. This red build IS that signal, and it
+      # keeps firing every night until someone restores access or edits packages.yaml.
+      # Runs last so the publish above still lands.
+      - name: Fail on unreachable packages
+        if: steps.sync.outputs.skipped == 'true'
+        run: |
+          echo "ERROR one or more registered repositories could not be read — see 'Run sync'."
+          echo "Restore public access, or remove the package from packages.yaml."
+          exit 1

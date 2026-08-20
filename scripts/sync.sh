@@ -61,6 +61,24 @@ probe_status() {
   echo "$code"
 }
 
+# Fetches a JSON document, retrying transient failures. Echoes the body on success
+# and NOTHING on failure, always returning 0 — a non-zero return here would be fatal
+# under `set -e`, which is exactly the blast radius this exists to remove: one
+# unreadable repository used to abort the run and stop publication for every other
+# package. Callers decide what an empty body means.
+fetch_json() {
+  local url="$1" body attempt
+  for attempt in 1 2 3; do
+    if body=$(curl -fsSL "${AUTH_HEADER[@]}" \
+      -H "Accept: application/vnd.github+json" "$url"); then
+      echo "$body"
+      return 0
+    fi
+    if [[ $attempt -lt 3 ]]; then sleep $((attempt * 2)); fi
+  done
+  return 0
+}
+
 # Existing accumulator (empty array on first run). packages-all.json is the superset
 # and is read first so its rows win the `.[0]` lookups below; packages.json is read
 # as a fallback so the very first run after this split still inherits the version
@@ -75,6 +93,9 @@ done
 count=$(yq '.packages | length' "$PACKAGES_YAML")
 results="[]"
 all_results="[]"
+# Packages whose repository could not be read this run. Non-empty ⇒ exit 2 at the
+# end, which the workflow turns into a red job AFTER publishing (see sync.yml).
+skipped=()
 
 for ((i=0; i<count; i++)); do
   name=$(yq -r ".packages[$i].name" "$PACKAGES_YAML")
@@ -93,9 +114,43 @@ for ((i=0; i<count; i++)); do
 
   echo "Syncing: $org/$repo (name: $name)"
 
-  repo_json=$(curl -fsSL "${AUTH_HEADER[@]}" \
-    -H "Accept: application/vnd.github+json" \
-    "$GH_API/repos/$org/$repo")
+  repo_json=$(fetch_json "$GH_API/repos/$org/$repo")
+
+  # A repository that cannot be read — private now, deleted, renamed, or a GitHub
+  # failure that outlived the retries — must not take the run down with it. Publish
+  # the last known entry unchanged and move on.
+  #
+  # There is deliberately no attempt to tell those cases apart. A 404 (private /
+  # gone) and a 5xx (GitHub is unwell) lead to the same action here, because the hub
+  # NEVER removes an entry on its own: taking a package out of the catalog is an
+  # explicit `packages.yaml` edit. That leaves nothing for a status-code check to
+  # decide, and it is why no drop heuristic, streak counter, or separate history
+  # store is needed to keep versions[] safe — the entry is simply never dropped.
+  #
+  # The cost is that a private package keeps a broken card (icon/docs/release assets
+  # all 404) until someone edits the yaml. The `exit 2` below is what makes sure
+  # someone does.
+  if [[ -z "$repo_json" ]]; then
+    skipped+=("$name")
+    prev_entry=$(echo "$existing" | jq --arg name "$name" \
+      '(map(select(.name == $name)) | .[0]) // null')
+
+    if [[ "$prev_entry" == "null" ]]; then
+      echo "  ! repo unreachable and never published — omitting $name from this run"
+      continue
+    fi
+
+    # `experiment` is re-read from packages.yaml rather than inherited from the old
+    # entry: the yaml stays the gate's source of truth even when the repo is dark,
+    # so flipping the flag still takes effect on an unreachable package.
+    prev_entry=$(echo "$prev_entry" | jq --argjson e "$experiment" '.experiment = $e')
+    all_results=$(echo "$all_results" | jq --argjson e "$prev_entry" '. + [$e]')
+    if [[ "$experiment" != "true" ]]; then
+      results=$(echo "$results" | jq --argjson e "$prev_entry" '. + [$e]')
+    fi
+    echo "  = repo unreachable — carrying previous entry forward unchanged"
+    continue
+  fi
 
   default_branch=$(echo "$repo_json" | jq -r '.default_branch')
   full_name=$(echo "$repo_json" | jq -r '.full_name')
@@ -224,3 +279,12 @@ echo "$results" | jq '.' > "$OUTPUT_JSON"
 echo "$all_results" | jq '.' > "$ALL_JSON"
 echo "Wrote $OUTPUT_JSON ($(echo "$results" | jq 'length') packages, legacy view)"
 echo "Wrote $ALL_JSON ($(echo "$all_results" | jq 'length') packages, $(echo "$all_results" | jq '[.[] | select(.experiment)] | length') experiment)"
+
+if [[ ${#skipped[@]} -gt 0 ]]; then
+  echo
+  echo "WARNING ${#skipped[@]} package(s) unreachable: ${skipped[*]}"
+  echo "  Their previous entries were republished unchanged, so the catalog is intact."
+  echo "  Restore public access, or remove the package from $PACKAGES_YAML — the hub"
+  echo "  does not drop an entry on its own."
+  exit 2
+fi

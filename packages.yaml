@@ -34,9 +34,3 @@ packages:
       repo: neo-pkg-dbus
       docs: neo-pkg-dbus/docs/index.en.md
       experiment: true
-
-    - name: neo-pkg-vibe-analytics
-      organization: machbase
-      repo: neo-pkg-vibe-analytics
-      docs: neo-pkg-vibe-analytics/docs/index.en.md
-      experiment: true

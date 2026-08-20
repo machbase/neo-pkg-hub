@@ -37,7 +37,7 @@ packages:
 
 다음 sync 실행 시 자동으로 `packages.json`이 갱신됩니다. `packages.yaml`을 main에 push하면 cron을 기다리지 않고 즉시 sync가 돕니다.
 
-> ⚠️ 등록 대상 저장소는 **public이어야 합니다.** `packages.json`은 인증 없는 브라우저가 직접 fetch하는 정적 파일이고, sync가 쓰는 Actions `GITHUB_TOKEN`은 이 저장소에만 스코프되므로 private 저장소는 조회 자체가 404가 되어 **sync 전체가 실패**합니다. `docs`/`icon` raw URL도 동일하게 404가 됩니다. 아직 공개할 수 없는 패키지는 등록을 미루세요 — `experiment: true`는 public 저장소를 카탈로그에서 가리는 수단이지, private 저장소를 등록하는 수단이 아닙니다.
+> ⚠️ 등록 대상 저장소는 **public이어야 합니다.** `packages.json`은 인증 없는 브라우저가 직접 fetch하는 정적 파일이고, sync가 쓰는 Actions `GITHUB_TOKEN`은 이 저장소에만 스코프되므로 private 저장소는 조회 자체가 404가 됩니다. `docs`/`icon` raw URL도 동일하게 404가 되고, 릴리스 asset도 받을 수 없어 설치가 실패합니다. 아직 공개할 수 없는 패키지는 등록을 미루세요 — `experiment: true`는 public 저장소를 카탈로그에서 가리는 수단이지, private 저장소를 등록하는 수단이 아닙니다. 이미 등록된 저장소가 나중에 private으로 바뀐 경우의 동작은 [저장소를 읽을 수 없을 때](#저장소를-읽을-수-없을-때)를 참고하세요.
 
 ## 필드
 
@@ -150,6 +150,15 @@ CI 게이트 (`sync.yml`의 `validate-yaml` job, PR·push·cron 모두에서 실
 - **비파괴 누산**: `sync.sh`는 기존 `packages.json`을 읽어 **새 버전만 prepend**하고 기존 행은 그대로 carry-forward합니다. 한 번 확정된 `minServer`는 daily sync로 덮어쓰이지 않습니다.
 - **수동 백필**: 시스템 도입 이전 과거 릴리스의 `minServer`는 `packages.json`을 직접 편집해 채웁니다.
 
+**보장 범위**
+
+sync는 매 실행마다 각 저장소의 `releases/latest` **하나만** 관찰하고, 관찰한 것을 비파괴 누적합니다. 따라서 아래는 기록되지 않습니다.
+
+- 한 sync 주기(24h) 안에 두 번 이상 릴리스한 경우, 마지막 것을 제외한 나머지
+- 저장소가 private이거나 `packages.yaml`에서 빠져 있는 동안 나온 릴리스
+
+hub는 누락된 버전을 소급 복원하지 않습니다. **이력의 연속성은 각 패키지 저장소의 책임입니다** — 릴리스는 sync 주기당 하나로, 저장소는 public으로 유지하세요. 다만 누락은 "들어오지 않은" 것이지 "지워진" 것이 아닙니다. 한 번 발행된 행은 그대로 남습니다.
+
 **검증 게이트** (`scripts/lib/validate.js`, sync 후 commit 전 실행):
 
 - **형식**: 모든 `version`/`minServer`가 유효 semver.
@@ -179,3 +188,15 @@ https://raw.githubusercontent.com/<owner>/neo-pkg-hub/main/packages-all.json   #
 - **PR**: `packages.yaml`을 변경하는 PR은 `validate-yaml`만 실행 (packages.json 재생성·push 없음)
 - **수동**: GitHub Actions → `sync packages` → Run workflow
 - **로컬**: `yq`, `jq`, `node` 설치 후 `npm install && bash scripts/sync.sh && npm run validate` (필요 시 `GITHUB_TOKEN` 환경변수 설정)
+
+## 저장소를 읽을 수 없을 때
+
+등록된 저장소가 private으로 바뀌거나, 삭제·이름 변경되거나, GitHub 장애가 재시도(3회)를 넘겨 지속되면 sync는 **그 패키지의 갱신만 건너뛰고 직전 엔트리를 그대로 다시 발행**합니다. 나머지 패키지는 정상 갱신됩니다. 하나가 막혀 전체 발행이 멈추는 일은 없습니다.
+
+- **hub는 스스로 항목을 지우지 않습니다.** 카탈로그에서 실제로 내리려면 `packages.yaml`에서 항목을 제거하세요.
+- 404(private/삭제)와 5xx(장애)를 **구분하지 않습니다.** 어느 쪽이든 동작이 "이전 값 유지"로 같기 때문입니다.
+- `experiment` 플래그만은 `packages.yaml` 값으로 다시 적용됩니다 — 저장소를 못 읽어도 게이트의 source of truth는 yaml입니다.
+- 한 번도 발행된 적 없는 패키지(신규 등록 시 오타, 처음부터 private)는 되살릴 엔트리가 없으므로 그냥 빠집니다.
+- skip이 하나라도 있으면 `sync.sh`는 `exit 2`로 끝나고, 워크플로는 **발행·commit·push를 모두 마친 뒤 마지막에 job을 실패**시킵니다. 조치할 때까지 매일 red가 뜹니다.
+
+이 동안 카탈로그에는 카드가 남지만 icon·docs·릴리스 asset이 전부 404라 **깨진 카드**로 보입니다. 의도된 trade-off입니다 — 일시 장애를 삭제로 오판해 멀쩡한 패키지를 카탈로그에서 지우는 것보다 낫습니다.
