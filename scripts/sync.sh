@@ -39,6 +39,11 @@ OUTPUT_JSON="${OUTPUT_JSON:-packages.json}"
 ALL_JSON="${ALL_JSON:-packages-all.json}"
 GH_API="${GH_API:-https://api.github.com}"
 
+# Expanded as ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} at every call site: bash before
+# 4.4 treats an empty array under `set -u` as unbound, so a plain "${AUTH_HEADER[@]}"
+# aborts every request when GITHUB_TOKEN is absent. CI always has the token and runs
+# bash 5, but an unauthenticated local run (README "로컬") is on whatever bash the
+# machine ships — macOS still ships 3.2.
 AUTH_HEADER=()
 if [[ -n "${GITHUB_TOKEN:-}" ]]; then
   AUTH_HEADER=(-H "Authorization: Bearer ${GITHUB_TOKEN}")
@@ -51,7 +56,7 @@ fi
 probe_status() {
   local url="$1" code attempt
   for attempt in 1 2 3; do
-    code=$(curl -sSL -o /dev/null -w '%{http_code}' "${AUTH_HEADER[@]}" \
+    code=$(curl -sSL -o /dev/null -w '%{http_code}' ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
       -H "Accept: application/vnd.github+json" "$url" || echo 000)
     case "$code" in
       200|404) break ;;
@@ -69,7 +74,7 @@ probe_status() {
 fetch_json() {
   local url="$1" body attempt
   for attempt in 1 2 3; do
-    if body=$(curl -fsSL "${AUTH_HEADER[@]}" \
+    if body=$(curl -fsSL ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
       -H "Accept: application/vnd.github+json" "$url"); then
       echo "$body"
       return 0
@@ -155,7 +160,7 @@ for ((i=0; i<count; i++)); do
   default_branch=$(echo "$repo_json" | jq -r '.default_branch')
   full_name=$(echo "$repo_json" | jq -r '.full_name')
 
-  release_json=$(curl -sSL "${AUTH_HEADER[@]}" \
+  release_json=$(curl -sSL ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
     -H "Accept: application/vnd.github+json" \
     "$GH_API/repos/$org/$repo/releases/latest" || echo '{}')
   version=$(echo "$release_json" | jq -r '.tag_name // ""')
@@ -212,7 +217,7 @@ for ((i=0; i<count; i++)); do
     # default branch). Missing/empty → left blank for manual backfill; the validator
     # flags it (gate 3a/3c).
     min_server=""
-    pkg_meta=$(curl -fsSL "${AUTH_HEADER[@]}" \
+    pkg_meta=$(curl -fsSL ${AUTH_HEADER[@]+"${AUTH_HEADER[@]}"} \
       -H "Accept: application/vnd.github+json" \
       "$GH_API/repos/$org/$repo/contents/package.json?ref=$version" 2>/dev/null || echo "")
     if [[ -n "$pkg_meta" ]]; then
