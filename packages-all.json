@@ -262,27 +262,5 @@
     },
     "released_at": null,
     "versions": []
-  },
-  {
-    "name": "neo-pkg-vibe-analytics",
-    "description": "",
-    "version": null,
-    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-vibe-analytics/main/icon.png",
-    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-vibe-analytics/main/docs/index.en.md",
-    "homepage": null,
-    "experiment": true,
-    "github": {
-      "organization": "machbase",
-      "repo": "neo-pkg-vibe-analytics",
-      "full_name": "machbase/neo-pkg-vibe-analytics",
-      "html_url": "https://github.com/machbase/neo-pkg-vibe-analytics",
-      "default_branch": "main",
-      "language": "JavaScript",
-      "license": null,
-      "stargazers_count": 0,
-      "forks_count": 0
-    },
-    "released_at": null,
-    "versions": []
   }
 ]
