@@ -60,7 +60,7 @@
   {
     "name": "neo-pkg-opcua-client",
     "description": "Collect OPC-UA Data",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-opcua-client/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -76,8 +76,13 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-07-01T07:53:39Z",
+    "released_at": "2026-08-05T07:27:02Z",
     "versions": [
+      {
+        "version": "1.0.8",
+        "minServer": "8.5.10",
+        "released_at": "2026-08-05T07:27:02Z"
+      },
       {
         "version": "1.0.7",
         "minServer": "8.5.6",
