@@ -138,7 +138,7 @@
   {
     "name": "neo-pkg-llm-chat",
     "description": "LLM-based chat interface",
-    "version": "3.3.0",
+    "version": "3.3.1",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -154,8 +154,13 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-09-10T01:03:50Z",
+    "released_at": "2026-09-10T06:55:22Z",
     "versions": [
+      {
+        "version": "3.3.1",
+        "minServer": "8.7.0",
+        "released_at": "2026-09-10T06:55:22Z"
+      },
       {
         "version": "3.3.0",
         "minServer": "8.7.0",
