@@ -206,7 +206,7 @@
   {
     "name": "neo-pkg-blackbox",
     "description": "Video recording tool",
-    "version": "v1.0.10",
+    "version": "v1.0.11",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-blackbox/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
@@ -222,8 +222,13 @@
       "stargazers_count": 1,
       "forks_count": 0
     },
-    "released_at": "2026-09-09T23:28:45Z",
+    "released_at": "2026-09-11T04:34:45Z",
     "versions": [
+      {
+        "version": "v1.0.11",
+        "minServer": "8.7.0",
+        "released_at": "2026-09-11T04:34:45Z"
+      },
       {
         "version": "v1.0.10",
         "minServer": "8.7.0",
