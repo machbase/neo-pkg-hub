@@ -14,28 +14,34 @@ set -euo pipefail
 #
 # Two files are published, distinguished by the `experiment` gate (machbase/neo#1438):
 #
-#   packages.json      non-experiment packages ONLY  — the legacy view
-#   packages-all.json  every package, each carrying its `experiment` flag
+#   packages.json      non-experiment packages ONLY — the catalog. Every neo-web
+#                      except v8.5.10 ~ v8.7.0 reads this file and nothing else.
+#   packages-all.json  DEPRECATED. Every package, each carrying its `experiment`
+#                      flag; read only by neo-web v8.5.10 ~ v8.7.0, which filters it
+#                      itself. Keep publishing it while those servers are supported.
 #
-# Non-experiment packages therefore appear in BOTH files. That redundancy is the
-# point, and it buys two things:
+# Non-experiment packages therefore appear in BOTH files, and every neo-web reads
+# exactly ONE of them, so no client ever reconciles two independently-cached
+# responses (splitting the data across two files would let a package in transition
+# appear in both or neither for up to the 5 minute raw.githubusercontent max-age).
 #
-#  1. Legacy safety. A client renders whatever the file it fetches contains, so a
-#     field it does not know about cannot hide anything — a single file with an
-#     `experiment` flag is fail-OPEN for every neo-web build predating the feature.
-#     Old builds only ever fetch packages.json, so leaving the entry out of that
-#     file is the only mechanism that actually hides it.
-#  2. Atomicity. Current neo-web reads packages-all.json and nothing else, so it
-#     never has to reconcile two independently-cached responses. Splitting the data
-#     across two files instead (stable here, experiment there) would let a package
-#     in transition appear in both or neither for up to the 5 minute
-#     raw.githubusercontent max-age, showing a duplicate card or none at all.
+# Leaving an entry out of packages.json is the only mechanism that actually hides
+# it: a client renders whatever the file it fetches contains, so a flag it ignores
+# cannot hide anything. That part stays when packages-all.json goes.
 #
-# Both files are ALWAYS written, empty ones as `[]` — neo-web treats a non-ok fetch
-# as an error, so a missing file would break the whole catalog.
+# BEFORE REMOVING packages-all.json: the accumulator below reads it first, and it is
+# the ONLY place an experiment package's versions[] history (and its carried-forward
+# entry while the repo is unreachable) is kept. Dropping the file without moving that
+# history elsewhere restarts it from the release observed at graduation. See the
+# README section "packages-all.json (deprecated)".
+#
+# Both files are ALWAYS written, empty ones as `[]` — older neo-web treats a non-ok
+# fetch as an error and empties the whole catalog, and newer neo-web loses every hub
+# card.
 
 PACKAGES_YAML="${PACKAGES_YAML:-packages.yaml}"
 OUTPUT_JSON="${OUTPUT_JSON:-packages.json}"
+# DEPRECATED output (neo-web v8.5.10 ~ v8.7.0 only) — read the header before removing.
 ALL_JSON="${ALL_JSON:-packages-all.json}"
 GH_API="${GH_API:-https://api.github.com}"
 
@@ -89,6 +95,7 @@ fetch_json() {
 # as a fallback so the very first run after this split still inherits the version
 # history that only exists in the legacy file. A package flipping `experiment` keeps
 # its versions[] and icon either way — it is the same accumulator on both sides.
+# It is also why packages-all.json cannot simply be deleted: see the header.
 existing="[]"
 for prev_file in "$ALL_JSON" "$OUTPUT_JSON"; do
   [[ -f "$prev_file" ]] || continue
@@ -272,8 +279,8 @@ for ((i=0; i<count; i++)); do
     }')
 
   # Every package goes into the experiment-aware view. Only non-experiment ones are
-  # also written to the legacy view — an experiment package must never land in
-  # packages.json, which is what old neo-web builds render unconditionally.
+  # also written to packages.json — an experiment package must never land there,
+  # because that is the file every neo-web except v8.5.10 ~ v8.7.0 renders unconditionally.
   all_results=$(echo "$all_results" | jq --argjson e "$entry" '. + [$e]')
   if [[ "$experiment" != "true" ]]; then
     results=$(echo "$results" | jq --argjson e "$entry" '. + [$e]')
@@ -282,8 +289,8 @@ done
 
 echo "$results" | jq '.' > "$OUTPUT_JSON"
 echo "$all_results" | jq '.' > "$ALL_JSON"
-echo "Wrote $OUTPUT_JSON ($(echo "$results" | jq 'length') packages, legacy view)"
-echo "Wrote $ALL_JSON ($(echo "$all_results" | jq 'length') packages, $(echo "$all_results" | jq '[.[] | select(.experiment)] | length') experiment)"
+echo "Wrote $OUTPUT_JSON ($(echo "$results" | jq 'length') packages, catalog)"
+echo "Wrote $ALL_JSON ($(echo "$all_results" | jq 'length') packages, $(echo "$all_results" | jq '[.[] | select(.experiment)] | length') experiment; deprecated — neo-web v8.5.10~v8.7.0 only)"
 
 if [[ ${#skipped[@]} -gt 0 ]]; then
   echo
