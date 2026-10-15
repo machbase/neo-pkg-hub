@@ -36,9 +36,3 @@ packages:
       repo: neo-pkg-dbus
       docs: neo-pkg-dbus/docs/index.en.md
       experiment: true
-
-    - name: neo-pkg-bearing-analytics
-      organization: machbase
-      repo: neo-pkg-bearing-analytics
-      docs: neo-pkg-bearing-analytics/docs/index.en.md
-      experiment: false  
