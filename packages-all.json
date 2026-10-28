@@ -284,7 +284,7 @@
   {
     "name": "neo-pkg-dbus",
     "description": "",
-    "version": "v1.0.7",
+    "version": "v1.0.8",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-dbus/main/icon.svg",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-dbus/main/docs/index.en.md",
     "homepage": null,
@@ -300,8 +300,13 @@
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "released_at": "2026-10-21T01:16:52Z",
+    "released_at": "2026-10-27T08:10:08Z",
     "versions": [
+      {
+        "version": "v1.0.8",
+        "minServer": "8.5.8",
+        "released_at": "2026-10-27T08:10:08Z"
+      },
       {
         "version": "v1.0.7",
         "minServer": "8.5.8",
