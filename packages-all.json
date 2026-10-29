@@ -343,5 +343,33 @@
         "released_at": "2026-09-04T02:59:34Z"
       }
     ]
+  },
+  {
+    "name": "neo-pkg-bearing-analytics",
+    "description": "",
+    "version": "1.0.0",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-bearing-analytics/main/icon.png",
+    "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-bearing-analytics/main/docs/index.en.md",
+    "homepage": null,
+    "experiment": false,
+    "github": {
+      "organization": "machbase",
+      "repo": "neo-pkg-bearing-analytics",
+      "full_name": "machbase/neo-pkg-bearing-analytics",
+      "html_url": "https://github.com/machbase/neo-pkg-bearing-analytics",
+      "default_branch": "main",
+      "language": "JavaScript",
+      "license": null,
+      "stargazers_count": 0,
+      "forks_count": 0
+    },
+    "released_at": "2026-10-29T06:28:47Z",
+    "versions": [
+      {
+        "version": "1.0.0",
+        "minServer": "8.7.3",
+        "released_at": "2026-10-29T06:28:47Z"
+      }
+    ]
   }
 ]
