@@ -284,7 +284,7 @@
   {
     "name": "neo-pkg-bearing-analytics",
     "description": "",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-bearing-analytics/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-bearing-analytics/main/docs/index.en.md",
     "homepage": null,
@@ -295,13 +295,18 @@
       "full_name": "machbase/neo-pkg-bearing-analytics",
       "html_url": "https://github.com/machbase/neo-pkg-bearing-analytics",
       "default_branch": "main",
-      "language": "JavaScript",
+      "language": "HTML",
       "license": null,
       "stargazers_count": 0,
       "forks_count": 0
     },
-    "released_at": "2026-10-29T06:28:47Z",
+    "released_at": "2026-10-30T04:44:24Z",
     "versions": [
+      {
+        "version": "1.1.0",
+        "minServer": "8.7.3",
+        "released_at": "2026-10-30T04:44:24Z"
+      },
       {
         "version": "1.0.0",
         "minServer": "8.7.3",
