@@ -139,7 +139,7 @@
     "name": "neo-pkg-llm-chat",
     "description": "LLM-based chat interface",
     "version": "3.3.1",
-    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.png",
+    "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/icon.svg",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-llm-chat/main/docs/index.en.md",
     "homepage": "http://docs.machbase.com",
     "experiment": false,
