@@ -230,54 +230,9 @@
         "released_at": "2026-09-11T04:34:45Z"
       },
       {
-        "version": "v1.0.10",
-        "minServer": "8.7.0",
-        "released_at": "2026-09-09T23:28:45Z"
-      },
-      {
         "version": "v1.0.9",
         "minServer": "8.5.4",
         "released_at": "2026-06-18T07:48:22Z"
-      },
-      {
-        "version": "1.0.8",
-        "minServer": "8.5.4",
-        "released_at": "2026-05-28T04:36:55Z"
-      },
-      {
-        "version": "1.0.7",
-        "minServer": "8.5.4",
-        "released_at": "2026-05-18T00:47:31Z"
-      },
-      {
-        "version": "1.0.6",
-        "minServer": "8.5.4",
-        "released_at": "2026-05-14T01:50:30Z"
-      },
-      {
-        "version": "v1.0.5",
-        "minServer": "8.5.4",
-        "released_at": "2026-05-14T01:41:12Z"
-      },
-      {
-        "version": "1.0.3",
-        "minServer": "8.5.4",
-        "released_at": "2026-04-29T07:17:52Z"
-      },
-      {
-        "version": "1.0.2",
-        "minServer": "8.5.4",
-        "released_at": "2026-04-28T03:38:16Z"
-      },
-      {
-        "version": "1.0.1",
-        "minServer": "8.5.4",
-        "released_at": "2026-04-28T03:08:28Z"
-      },
-      {
-        "version": "1.0.0",
-        "minServer": "8.5.0",
-        "released_at": "2026-04-28T02:15:43Z"
       }
     ]
   },
