@@ -243,7 +243,7 @@
   },
   {
     "name": "neo-pkg-bearing-analytics",
-    "description": "",
+    "description": "Bearing vibration analysis tool",
     "version": "1.1.1",
     "icon": "https://raw.githubusercontent.com/machbase/neo-pkg-bearing-analytics/main/icon.png",
     "docs": "https://raw.githubusercontent.com/machbase/neo-pkg-bearing-analytics/main/docs/index.en.md",
