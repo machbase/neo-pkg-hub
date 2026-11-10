@@ -40,8 +40,8 @@ packages:
     - name: neo-pkg-bearing-analytics
       organization: machbase
       repo: neo-pkg-bearing-analytics
-      docs: neo-pkg-bearing-analytics/docs/index.en.md
-      experiment: false  
+      docs: neo-pkg-bearing-analytics/README.md
+      experiment: false
 
     - name: neo-pkg-theme-builder
       organization: machbase
