@@ -11,8 +11,8 @@ machbase-neo 패키지 메타데이터 허브.
 ```
 .
 ├── packages.yaml              # 패키지 목록 (수동 관리)
-├── packages.json              # 출시 패키지만 — neo-web이 읽는 카탈로그 (비파괴 누산기, 자동 갱신)
-├── packages-all.json          # ⚠️ deprecated — 전체 + experiment 플래그, neo-web v8.5.10~v8.7.0 전용 (같은 스키마, 항목 없으면 [])
+├── packages.json              # 출시 패키지만 — 일반 모드 neo-web이 읽는 카탈로그 (비파괴 누산기, 자동 갱신)
+├── packages-all.json          # 전체 + experiment 플래그 — experiment 모드 서버가 읽는 카탈로그 (같은 스키마, 항목 없으면 [])
 ├── package.json               # validator 의존성 (semver)
 ├── scripts/
 │   ├── sync.sh                # sync 로직 (bash + curl + jq + yq)
@@ -45,7 +45,7 @@ packages:
 - **icon**: 각 패키지 저장소 루트에 `icon.svg` 또는 `icon.png`를 두면 자동 감지됩니다 (sync 시 HEAD 요청으로 `svg` → `png` 순 확인). 둘 다 없으면 `null`. 다른 경로/파일명을 쓰려면 `icon` 필드에 전체 URL로 override.
 - **version / released_at**: GitHub `releases/latest` API에서 `tag_name`과 `published_at`을 가져와 채웁니다. 릴리스가 없으면 `null`.
 - **homepage**: GitHub 저장소 메타데이터의 `homepage` 값.
-- **experiment**: **전 패키지 필수, boolean.** `true`면 `packages.json`에 싣지 않아 neo-web 카탈로그에 나타나지 않습니다 (deprecated인 `packages-all.json`에는 실림). `false`면 두 파일 모두에 실립니다 (이슈 machbase/neo#1438). 자세한 내용은 [experiment 게이트](#experiment-게이트) 참고.
+- **experiment**: **전 패키지 필수, boolean.** `true`면 `packages.json`에 싣지 않고 `packages-all.json`에만 실어, experiment 모드 서버의 neo-web 카탈로그에만 나타납니다. `false`면 두 파일 모두에 실립니다 (이슈 machbase/neo#1438, machbase/neo#1584). 자세한 내용은 [experiment 게이트](#experiment-게이트) 참고.
 
 클라이언트는 `icon`/`docs`가 `null`이거나 로드 실패 시 fallback 처리하세요.
 
@@ -53,7 +53,7 @@ packages:
 
 검증이 끝나지 않은 패키지가 hub 등록과 동시에 모든 사용자에게 노출되는 것을 막기 위한 장치입니다. **hub가 하는 일은 `experiment: true` 패키지를 `packages.json`에 싣지 않는 것 하나입니다.**
 
-> ⚠️ **`packages-all.json`은 deprecated입니다.** 이 파일을 읽는 neo-web은 **v8.5.10 ~ v8.7.0**뿐이고, v8.7.0 다음 릴리스부터는 `packages.json`만 읽습니다. 새 클라이언트는 이 파일을 쓰지 마세요. 해당 버전 서버를 지원하는 동안만 발행을 유지하며, 제거 전에 확인할 것은 [`packages-all.json` (deprecated)](#packages-alljson-deprecated)에 있습니다.
+> **`packages-all.json`은 experiment 모드 서버가 읽는 파일입니다.** 일반 모드 neo-web은 `packages.json`만 읽습니다. 예외로 neo-web v8.5.10, v8.5.11, v8.7.0은 모드와 상관없이 `packages-all.json`을 읽습니다. 자세한 내용은 [`packages-all.json`](#packages-alljson)에 있습니다.
 
 ### 버전별로 읽는 파일
 
@@ -62,26 +62,29 @@ neo-web은 machbase-neo와 같은 버전 번호로 함께 릴리스됩니다.
 | neo-web (= machbase-neo) | 읽는 파일 | `experiment: true` 패키지 |
 | --- | --- | --- |
 | v8.5.9 이하 | `packages.json` | 카탈로그에 없음 |
-| v8.5.10 ~ v8.7.0 | `packages-all.json` (실패하면 `packages.json`) | 서버 experiment 모드 ON일 때만 표시. 이미 설치된 패키지는 OFF여도 표시하되 설치·업데이트는 막음 |
-| v8.7.0 다음 릴리스부터 | `packages.json` | 카탈로그에 없음. 서버 `/public/`에 아카이브나 설치본이 있으면 그것으로 카드 표시 |
+| v8.5.10, v8.5.11, v8.7.0 | `packages-all.json` (실패하면 `packages.json`) | 서버 experiment 모드 ON일 때만 표시. 이미 설치된 패키지는 OFF여도 표시하되 설치·업데이트는 막음 |
+| v8.5.12, v8.7.1 ~ v8.7.3 | `packages.json` | 카탈로그에 없음. 서버 `/public/`에 아카이브나 설치본이 있으면 그것으로 카드 표시 |
+| machbase/neo#1584 반영 이후 | 서버 experiment 모드 ON이면 `packages-all.json`, OFF면 `packages.json` | 서버 experiment 모드 ON일 때만 표시. 서버 `/public/`의 아카이브·설치본은 모드와 상관없이 카드 표시 |
 
-v8.7.0 다음 릴리스부터는 experiment 플래그를 보지 않습니다. 서버 experiment 모드가 App Store에 주는 영향은 버전 메뉴의 커스텀 버전 입력란 하나뿐입니다.
+machbase/neo#1584 반영 이후의 neo-web은 카탈로그를 만들 때마다 서버의 experiment 모드를 확인해 읽을 파일을 고릅니다. 고른 파일 하나만 요청하고, 실패해도 다른 파일로 다시 요청하지 않습니다. 카드마다 `experiment` 값으로 거르지 않으므로, 무엇이 보이는지는 어느 파일을 읽느냐로만 정해집니다. v8.5.12, v8.7.1 ~ v8.7.3은 experiment 플래그를 보지 않고 모드와 상관없이 `packages.json`만 읽습니다.
 
 ### 왜 `packages.json`에서 빼는가
 
-클라이언트는 받은 파일을 그대로 렌더링하므로, 한 파일에 `experiment` 필드만 넣는 방식은 그 필드를 모르거나 무시하는 클라이언트에 대해 **fail-open**입니다. `packages.json`에 **엔트리를 넣지 않는 것만이 실제로 숨기는 유일한 수단**이고, 이 원칙은 `packages-all.json`을 제거한 뒤에도 그대로입니다.
+클라이언트는 받은 파일을 그대로 렌더링하므로, 한 파일에 `experiment` 필드만 넣는 방식은 그 필드를 모르거나 무시하는 클라이언트에 대해 **fail-open**입니다. `packages.json`에 **엔트리를 넣지 않는 것만이 실제로 숨기는 유일한 수단**이고, 이 원칙은 클라이언트가 어느 파일을 읽든 그대로입니다.
 
 `packages.json`은 해당 패키지가 없어도 **항상 `[]`로 발행됩니다.** 구버전 neo-web은 non-ok 응답을 에러로 처리해 카탈로그 전체가 비고, 새 neo-web도 hub 카드를 전부 잃고 오프라인으로 표시됩니다.
 
 ### 미출시 패키지를 테스트하려면
 
-v8.7.0 다음 릴리스부터는 `experiment: true` 패키지가 **서버 experiment 모드와 무관하게** 카탈로그에 나오지 않습니다. 테스터에게 배포하려면 패키지 아카이브(GitHub `Download ZIP` 또는 codeload tarball — `.zip` / `.tar` / `.tar.gz` / `.tgz`)를 테스트 서버의 `/public/`에 두세요. neo-web은 서버의 아카이브를 스캔해 루트 `package.json`으로 카드를 만들고, hub와 무관하게 설치·업데이트할 수 있게 합니다. 인터넷이 닿지 않는 서버에 배포하는 방법도 같습니다.
+서버를 experiment 모드로 켜면 카탈로그에 나타납니다(machbase/neo#1584 반영 이후 neo-web, 그리고 v8.5.10, v8.5.11, v8.7.0). v8.5.12, v8.7.1 ~ v8.7.3에서는 `experiment: true` 패키지가 **서버 experiment 모드와 무관하게** 카탈로그에 나오지 않습니다.
 
-v8.5.10 ~ v8.7.0 서버라면 서버를 experiment 모드로 켜면 카탈로그에 나타납니다.
+experiment 모드를 켜지 않는 서버의 테스터에게 배포하려면 패키지 아카이브(GitHub `Download ZIP` 또는 codeload tarball — `.zip` / `.tar` / `.tar.gz` / `.tgz`)를 테스트 서버의 `/public/`에 두세요. neo-web은 서버의 아카이브를 스캔해 루트 `package.json`으로 카드를 만들고, hub와 무관하게 설치·업데이트할 수 있게 합니다. 인터넷이 닿지 않는 서버에 배포하는 방법도 같습니다.
 
-### `packages-all.json` (deprecated)
+### `packages-all.json`
 
-neo-web v8.5.10 ~ v8.7.0만 읽는 파일입니다. 모든 패키지를 각 엔트리의 `experiment` 플래그와 함께 싣고(일반 패키지는 `packages.json`과 중복), 클라이언트가 로컬에서 거릅니다. 참고용이며 이후 릴리스에는 없는 로직입니다:
+experiment 모드 서버가 읽는 파일입니다. 모든 패키지를 각 엔트리의 `experiment` 플래그와 함께 싣습니다(일반 패키지는 `packages.json`과 중복). 두 파일의 공통 엔트리는 `experiment`를 빼면 버전 목록까지 모든 필드가 같습니다.
+
+machbase/neo#1584 반영 이후의 neo-web은 이 파일을 거르지 않고 그대로 카탈로그로 씁니다. neo-web v8.5.10, v8.5.11, v8.7.0은 모드와 상관없이 이 파일을 먼저 요청하고(실패하면 `packages.json`), 클라이언트에서 거릅니다. 그 버전들의 로직은 다음과 같습니다:
 
 ```ts
 const all = await fetchPkgHubList(PKG_HUB_ALL_URL);
@@ -92,15 +95,11 @@ const visible = all.filter((p) => !p.experiment || experimentOn || p.installed_f
 
 두 파일을 병합하는 클라이언트는 없어야 합니다. 어느 neo-web이든 파일을 **하나만** 읽기 때문에, `raw.githubusercontent`가 두 파일을 따로 캐시(`max-age=300`)해도 전환 중인 패키지가 중복되거나 사라지는 일이 없습니다.
 
-**제거 조건**: v8.5.10 ~ v8.7.0 서버를 더 이상 지원하지 않을 때.
+**이 파일에 걸린 것**
 
-**제거 전에 알아둘 것**
-
-- **구버전 서버는 깨지지 않습니다.** v8.5.10 ~ v8.7.0 neo-web은 `packages-all.json`을 먼저 요청하고 실패하면 `packages.json`으로 넘어갑니다 (v8.5.10·v8.7.0 코드로 확인). 파일이 없어도 카탈로그는 유지되고, 카탈로그를 열 때마다 404가 하나 더 생기며, experiment 모드에서도 미출시 패키지가 보이지 않게 될 뿐입니다.
-- **experiment 패키지의 버전 이력이 사라집니다.** `sync.sh`의 누산기는 이전 이력을 `packages-all.json` → `packages.json` 순으로 읽는데, experiment 패키지는 `packages.json`에 없으므로 **그 `versions[]` 이력은 `packages-all.json`에만 있습니다.** 파일을 그냥 없애면 이력이 남을 곳이 없어져, 해당 패키지가 출시되는 시점의 최신 릴리스부터 이력이 다시 쌓입니다. 보존하려면 제거 전에 누산기를 다른 저장소로 옮기세요.
-- **`experiment` 필드는 제거 대상이 아닙니다.** 패키지를 `packages.json`에서 빼는 역할은 파일이 하나로 줄어도 그대로 필요합니다.
-
-**절차**: ① 이력 보존 방법 결정 → ② `scripts/sync.sh`에서 `ALL_JSON` 발행과 누산기의 `packages-all.json` 읽기 제거 → ③ 저장소에서 `packages-all.json` 삭제 → ④ 이 절과 위 버전 표의 v8.5.10 ~ v8.7.0 행 삭제.
+- **experiment 모드 서버의 카탈로그입니다.** 파일이 없으면 experiment 모드 서버의 neo-web은 hub 카드를 전부 잃고 오프라인으로 표시합니다(다른 파일로 다시 요청하지 않음). v8.5.10, v8.5.11, v8.7.0은 `packages.json`으로 넘어가 미출시 패키지만 보이지 않게 됩니다.
+- **experiment 패키지의 버전 이력이 여기에만 있습니다.** `sync.sh`의 누산기는 이전 이력을 `packages-all.json` → `packages.json` 순으로 읽는데, experiment 패키지는 `packages.json`에 없으므로 **그 `versions[]` 이력은 `packages-all.json`에만 있습니다.** 파일이 사라지면 해당 패키지가 출시되는 시점의 최신 릴리스부터 이력이 다시 쌓입니다.
+- **`experiment` 필드는 두 파일을 가르는 기준입니다.** 패키지를 `packages.json`에서 빼는 역할은 어느 클라이언트에 대해서도 그대로 필요합니다.
 
 ### 원천과 검증
 
@@ -195,10 +194,10 @@ hub는 누락된 버전을 소급 복원하지 않습니다. **이력의 연속�
 
 ```
 https://raw.githubusercontent.com/<owner>/neo-pkg-hub/main/packages.json       # 카탈로그 (출시 패키지)
-https://raw.githubusercontent.com/<owner>/neo-pkg-hub/main/packages-all.json   # ⚠️ deprecated — neo-web v8.5.10~v8.7.0 전용
+https://raw.githubusercontent.com/<owner>/neo-pkg-hub/main/packages-all.json   # 전체 + experiment 플래그 — experiment 모드 서버가 읽는 파일
 ```
 
-두 파일은 **엔트리 스키마가 동일**하므로 같은 파서를 재사용하면 됩니다. 새 클라이언트는 `packages.json` **하나만** 사용하세요 — 미출시 패키지를 걸러내는 일은 hub가 이미 했습니다. `packages-all.json`은 deprecated이며 [제거 예정](#packages-alljson-deprecated)입니다. 어떤 경우에도 두 파일을 병합하지 마세요. 캐시 만료 시점이 어긋나 전환 중인 패키지가 중복되거나 사라집니다.
+두 파일은 **엔트리 스키마가 동일**하므로 같은 파서를 재사용하면 됩니다. 클라이언트는 둘 중 **하나만** 골라 읽으세요 — 출시 패키지만 보여 줄 때는 `packages.json`(미출시 패키지를 걸러내는 일은 hub가 이미 했습니다), 미출시 패키지까지 보여 줄 때(experiment 모드 서버)는 [`packages-all.json`](#packages-alljson). 어떤 경우에도 두 파일을 병합하지 마세요. 캐시 만료 시점이 어긋나 전환 중인 패키지가 중복되거나 사라집니다.
 
 각 패키지의 문서/아이콘은 각 엔트리의 `docs`, `icon` URL을 그대로 사용하면 됩니다.
 

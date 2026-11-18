@@ -14,11 +14,12 @@ set -euo pipefail
 #
 # Two files are published, distinguished by the `experiment` gate (machbase/neo#1438):
 #
-#   packages.json      non-experiment packages ONLY — the catalog. Every neo-web
-#                      except v8.5.10 ~ v8.7.0 reads this file and nothing else.
-#   packages-all.json  DEPRECATED. Every package, each carrying its `experiment`
-#                      flag; read only by neo-web v8.5.10 ~ v8.7.0, which filters it
-#                      itself. Keep publishing it while those servers are supported.
+#   packages.json      non-experiment packages ONLY — the catalog neo-web reads when
+#                      the server is not in experiment mode.
+#   packages-all.json  Every package, each carrying its `experiment` flag — the
+#                      catalog neo-web reads when the server runs in experiment mode
+#                      (machbase/neo#1584). neo-web v8.5.10, v8.5.11 and v8.7.0 read it
+#                      whatever the mode and filter it themselves.
 #
 # Non-experiment packages therefore appear in BOTH files, and every neo-web reads
 # exactly ONE of them, so no client ever reconciles two independently-cached
@@ -27,13 +28,11 @@ set -euo pipefail
 #
 # Leaving an entry out of packages.json is the only mechanism that actually hides
 # it: a client renders whatever the file it fetches contains, so a flag it ignores
-# cannot hide anything. That part stays when packages-all.json goes.
+# cannot hide anything.
 #
-# BEFORE REMOVING packages-all.json: the accumulator below reads it first, and it is
-# the ONLY place an experiment package's versions[] history (and its carried-forward
-# entry while the repo is unreachable) is kept. Dropping the file without moving that
-# history elsewhere restarts it from the release observed at graduation. See the
-# README section "packages-all.json (deprecated)".
+# packages-all.json is also the ONLY place an experiment package's versions[] history
+# (and its carried-forward entry while the repo is unreachable) is kept: the
+# accumulator below reads it first. See the README section "packages-all.json".
 #
 # Both files are ALWAYS written, empty ones as `[]` — older neo-web treats a non-ok
 # fetch as an error and empties the whole catalog, and newer neo-web loses every hub
@@ -41,7 +40,7 @@ set -euo pipefail
 
 PACKAGES_YAML="${PACKAGES_YAML:-packages.yaml}"
 OUTPUT_JSON="${OUTPUT_JSON:-packages.json}"
-# DEPRECATED output (neo-web v8.5.10 ~ v8.7.0 only) — read the header before removing.
+# The experiment-mode catalog (every package) — see the header.
 ALL_JSON="${ALL_JSON:-packages-all.json}"
 GH_API="${GH_API:-https://api.github.com}"
 
@@ -290,7 +289,7 @@ done
 echo "$results" | jq '.' > "$OUTPUT_JSON"
 echo "$all_results" | jq '.' > "$ALL_JSON"
 echo "Wrote $OUTPUT_JSON ($(echo "$results" | jq 'length') packages, catalog)"
-echo "Wrote $ALL_JSON ($(echo "$all_results" | jq 'length') packages, $(echo "$all_results" | jq '[.[] | select(.experiment)] | length') experiment; deprecated — neo-web v8.5.10~v8.7.0 only)"
+echo "Wrote $ALL_JSON ($(echo "$all_results" | jq 'length') packages, $(echo "$all_results" | jq '[.[] | select(.experiment)] | length') experiment; the experiment-mode catalog)"
 
 if [[ ${#skipped[@]} -gt 0 ]]; then
   echo
